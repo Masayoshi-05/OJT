@@ -22,7 +22,7 @@ do
 	listNum=$(($listNum + 1))
 done
 
-#存在するファイルが一つも指定されていなかった場合の処理
+#指定されたファイルが一つも存在しなかった場合の処理
 if [ ${#targetFiles[@]} = 0 ]; then
 	exit
 fi
@@ -60,13 +60,16 @@ do
 	while read -r line ;
 	do
 		IFS=$'\t' read -r -a separatedLine < <(echo "$line")
-		writeDate=${separatedLine[0]}
+		lineDate=${separatedLine[0]}
 		targetText=${separatedLine[1]}
 
 		#抽出したテキストが検索ワードを含むかどうか一行ずつ確認
 		if echo "$targetText" | grep -F -q "$searchText"; then
 			#ヒットしたテキストを書き込み日・行数と併せて表示
-			echo "$lineNum行目:$writeDate $targetText"
+			#タブ文字を区切り文字で使うため-eオプションを使用するが、テキストはそのままで出力したいため、-nオプションを使用してecho処理を三行に分けている。
+			echo -n "$lineNum行目:$lineDate"
+			echo -e -n "\t"
+			echo "$targetText"
 			hitCount=$(($hitCount + 1))
 		fi
 		lineNum=$(($lineNum + 1))
