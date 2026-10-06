@@ -1,0 +1,95 @@
+@charset "UTF-8";
+
+.message {
+	height: 54px;
+	font-size: 20px;
+}
+
+.formRow {
+	display: grid;
+	grid-template-columns: 200px 320px;
+	column-gap: 80px;
+}
+
+.formRow label {
+	text-align: right;
+	padding-top: 4px;
+	font-size: 16px;
+}
+
+.inputArea {
+	width: 100%;
+}
+
+.inputArea>input {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.nameInputs {
+	display: flex;
+	gap: 38px;
+}
+
+.nameInputs input {
+	box-sizing: border-box;
+	width: 141px;
+}
+
+.displayArea {
+	width: 100%;
+}
+
+.displayValue {
+	min-height: 28px;
+	line-height: 28px;
+}
+
+.errorMessage {
+	color: #d9534f;
+	min-height: 18px;
+	padding: 4px 8px;
+	margin-top: 3px;
+	border-radius: 4px;
+	font-size: 14px;
+	width: fit-content;
+}
+
+.requiredText {
+	width: 600px;
+	text-align: right;
+	color: red;
+	font-size: 13px;
+	margin-top: 4px;
+	margin-bottom: 28px;
+}
+
+.pageHeader {
+	width: 600px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.pageHeader h2 {
+	margin: 0;
+}
+
+.pageHeader a {
+	color: blue;
+	font-size: 13px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.singleButtonArea {
+	width: 600px;
+	text-align: right;
+}
+
+.doubleButtonArea {
+	width: 600px;
+	display: flex;
+	justify-content: space-between;
+}
