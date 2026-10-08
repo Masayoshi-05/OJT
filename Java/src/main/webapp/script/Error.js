@@ -1,89 +1,60 @@
-const requiredErrorMessage = "入力必須の項目です。";
-const tooLongErrorMessage = "登録可能な文字数を超過しています。";
-const invalidCharacterErrorMessage = "使用できない文字が含まれています。";
-const emailErrorMessage = "メールアドレスの形式が不正です。";
-const dateErrorMessage = "日付の形式が不正です。";
+
+const ERROR_REQUIRED = "入力必須の項目です。";
+const ERROR_TOO_LONG = "登録可能な文字数を超過しています。";
+const ERROR_INVALID_CHARACTER = "使用できない文字が含まれています。";
+const ERROR_EMAIL = "メールアドレスの形式が不正です。";
+const ERROR_DATE = "日付の形式が不正です。";
 
 
-form = document.getElementById("employeeForm");
-form.addEventListener("submit", function(event) {
-    let hasError = false;
-
-    employeeNum = document.getElementById("employeeNum");
-    employeeNumError = document.getElementById("employeeNumError");
-    employeeNumError.textContent = "";
-    if (employeeNum.value === "") {
-        employeeNumError.textContent = requiredErrorMessage;
-        hasError = true;
-    } else if (employeeNum.value.length > 4) {
-        employeeNumError.textContent = tooLongErrorMessage;
-        hasError = true;
-    } else if (!/^[0-9]+$/.test(employeeNum.value)) {
-        employeeNumError.textContent = invalidCharacterErrorMessage;
-        hasError = true;
+function validateEmployeeNum(value) {
+    if (value === "") {
+        return ERROR_REQUIRED;
+    } else if (value.length > 4) {
+        return ERROR_TOO_LONG;
+    } else if (!/^[0-9]+$/.test(value)) {
+        return ERROR_INVALID_CHARACTER;
     }
+    return "";
+}
 
-    kanjiLastName = document.getElementById("kanjiLastName");
-    kanjiFirstName = document.getElementById("kanjiFirstName");
-    kanjiNameError = document.getElementById("kanjiNameError");
-    kanjiNameError.textContent = "";
-    if (kanjiLastName.value === "" || kanjiFirstName.value === "") {
-        kanjiNameError.textContent = requiredErrorMessage;
-        hasError = true;
-    } else if (kanjiLastName.value.length > 30 || kanjiFirstName.value.length > 30) {
-        kanjiNameError.textContent = tooLongErrorMessage;
-        hasError = true;
+function validateKanjiName(lastName, firstName) {
+    if (lastName === "" || firstName === "") {
+        return ERROR_REQUIRED;
+    } else if (lastName.length > 30 || firstName.length > 30) {
+        return ERROR_TOO_LONG;
     }
+    return "";
+}
 
-    romanLastName = document.getElementById("romanLastName");
-    romanFirstName = document.getElementById("romanFirstName");
-    romanNameError = document.getElementById("romanNameError");
-    romanNameError.textContent = "";
-    if (romanLastName.value === "" || romanFirstName.value === "") {
-        romanNameError.textContent = requiredErrorMessage;
-        hasError = true;
-    } else if (romanLastName.value.length > 30 || romanFirstName.value.length > 30) {
-        romanNameError.textContent = tooLongErrorMessage;
-        hasError = true;
-    } else if (!/^[A-Za-z]+$/.test(romanLastName.value) || !/^[A-Za-z]+$/.test(romanFirstName.value)) {
-        romanNameError.textContent = invalidCharacterErrorMessage;
-        hasError = true;
+function validateRomanName(lastName, firstName) {
+    if (lastName === "" || firstName === "") {
+        return ERROR_REQUIRED;
+    } else if (lastName.length > 30 || firstName.length > 30) {
+        return ERROR_TOO_LONG;
+    } else if (!/^[A-Za-z]+$/.test(lastName) || !/^[A-Za-z]+$/.test(firstName)) {
+        return ERROR_INVALID_CHARACTER;
     }
+    return "";
+}
 
-    email = document.getElementById("email");
-    emailError = document.getElementById("emailError");
-    emailError.textContent = "";
-    if (email.value !== "") {
-        if (email.value.length > 100) {
-            emailError.textContent = tooLongErrorMessage;
-            hasError = true;
-        } else if (!/^[A-Za-z0-9][A-Za-z0-9._-]*[A-Za-z0-9]$/.test(email.value)) {
-            emailError.textContent = emailErrorMessage;
-            hasError = true;
+function validateEmail(email) {
+    if (email !== "") {
+        if (email.length > 100) {
+            return ERROR_TOO_LONG;
+        } else if (!/^[A-Za-z0-9][A-Za-z0-9._-]*[A-Za-z0-9]$/.test(email)) {
+            return ERROR_EMAIL;
         }
     }
+    return "";
+}
 
-    birthday = document.getElementById("birthday");
-    birthdayError = document.getElementById("birthdayError");
-    birthdayError.textContent = null;
-    if (birthday.value !== "") {
-        if (!/^[0-2]0[0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[01])$/.test(birthday.value)) {
-            birthdayError.textContent = dateErrorMessage;
-            hasError = true;
+function validateDate(date) {
+    if (date !== "") {
+        if (!/^[0-2]0[0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[01])$/.test(date)) {
+            return ERROR_DATE;
+
         }
     }
+    return "";
+}
 
-    joinDate = document.getElementById("joinDate");
-    joinDateError = document.getElementById("joinDateError");
-    joinDateError.textContent = null;
-    if (joinDate.value !== "") {
-        if (!/^[0-2]0[0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[01])$/.test(joinDate.value)) {
-            joinDateError.textContent = dateErrorMessage;
-            hasError = true;
-        }
-    }
-
-    if (hasError) {
-        event.preventDefault();
-    }
-});
