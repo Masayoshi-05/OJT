@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import definition.Keys;
+import definition.ErrorKeys;
+import definition.Paths;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
 import validator.EmployeeValidator;
@@ -41,25 +42,18 @@ public class EmoployeeRegisterComplete extends HttpServlet {
 		errorValues.setBirthdayError(EmployeeValidator.validateDate(employee.getBirthday()));
 		errorValues.setJoinDateError(EmployeeValidator.validateDate(employee.getJoinDate()));
 
-		boolean hasError = errorValues.getEmployeeNumError() != null
-				|| errorValues.getKanjiNameError() != null
-				|| errorValues.getRomanNameError() != null
-				|| errorValues.getEmailError() != null
-				|| errorValues.getBirthdayError() != null
-				|| errorValues.getJoinDateError() != null;
+		if (errorValues.isHasError()) {
+			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.nullDisplay(errorValues.getEmployeeNumError()));
+			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.nullDisplay(errorValues.getKanjiNameError()));
+			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.nullDisplay(errorValues.getRomanNameError()));
+			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.nullDisplay(errorValues.getEmailError()));
+			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.nullDisplay(errorValues.getBirthdayError()));
+			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.nullDisplay(errorValues.getJoinDateError()));
 
-		if (hasError) {
-			request.setAttribute(Keys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
-			request.setAttribute(Keys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
-			request.setAttribute(Keys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
-			request.setAttribute(Keys.EMAIL_ERROR, errorValues.getEmailError());
-			request.setAttribute(Keys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
-			request.setAttribute(Keys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
-
-			request.getRequestDispatcher(Keys.REGISTER_INPUT_PATH).forward(request, response);
+			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;
 		} else {
-			request.getRequestDispatcher(Keys.REGISTER_COMPLETE_PATH).forward(request, response);
+			request.getRequestDispatcher(Paths.REGISTER_COMPLETE_PATH).forward(request, response);
 		}
 	}
 

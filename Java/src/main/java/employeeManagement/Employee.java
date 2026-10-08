@@ -1,5 +1,8 @@
 package employeeManagement;
 
+/**
+* 社員情報を保持するクラス
+*/
 public class Employee {
 	private int iD;
 	private String employeeNum;

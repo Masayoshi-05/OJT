@@ -8,7 +8,6 @@ public class ErrorValues {
 	private String birthdayError;
 	private String joinDateError;
 	
-	
 	public String getEmployeeNumError() {
 		return employeeNumError;
 	}
@@ -46,5 +45,19 @@ public class ErrorValues {
 		this.joinDateError = joinDateError;
 	}
 	
+	public boolean isHasError() {
+		return employeeNumError != null
+				|| kanjiNameError != null
+				|| romanNameError != null
+				|| emailError != null
+				|| birthdayError != null
+				|| joinDateError != null;
+	}
 	
+	public String nullDisplay(String value) {
+		if(value == null) {
+			return "";
+		}
+		return value;
+	}
 }

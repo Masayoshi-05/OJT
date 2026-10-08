@@ -23,7 +23,7 @@ public class EmployeeValidator {
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
 	public static String validateEmployeeNum(String employeeNum) {
-		if (employeeNum == null) {
+		if (employeeNum == null || employeeNum.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (employeeNum.length() > 4) {
 			return ERROR_TOO_LONG;
@@ -40,7 +40,7 @@ public class EmployeeValidator {
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
 	public static String validateKanjiName(String kanjiLastName, String kanjiFirstName) {
-		if (kanjiLastName == null || kanjiFirstName == null) {
+		if (kanjiLastName == null || kanjiFirstName == null || kanjiLastName.isEmpty() || kanjiFirstName.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (kanjiLastName.length() > 30 || kanjiFirstName.length() > 30) {
 			return ERROR_TOO_LONG;
@@ -55,7 +55,7 @@ public class EmployeeValidator {
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
 	public static String validateRomanName(String romanLastName, String romanFirstName) {
-		if (romanLastName == null || romanFirstName == null) {
+		if (romanLastName == null || romanFirstName == null || romanLastName.isEmpty() || romanFirstName.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (romanLastName.length() > 30 || romanFirstName.length() > 30) {
 			return ERROR_TOO_LONG;
@@ -71,7 +71,7 @@ public class EmployeeValidator {
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
 	public static String validateEmail(String email) {
-		if (email != null) {
+		if (email != null && !email.isEmpty()) {
 			if (!email.matches("^[A-Za-z0-9][A-Za-z0-9._-]*[A-Za-z0-9]$")) {
 				return ERROR_EMAIL;
 			} else if (email.length() > 100) {
@@ -87,7 +87,7 @@ public class EmployeeValidator {
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
 	public static String validateDate(String date) {
-		if (date != null) {
+		if (date != null && !date.isEmpty()) {
 			try {
 				LocalDate.parse(date, DATE_FORMATTER);
 			} catch (DateTimeParseException e) {
