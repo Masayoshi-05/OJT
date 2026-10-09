@@ -11,7 +11,7 @@
 
 			<link rel="stylesheet" href="css/style.css">
 
-			<script src="EmployeeValidator.js" defer></script>
+			<script src="script/EmployeeValidator.js" ></script>
 
 		</head>
 

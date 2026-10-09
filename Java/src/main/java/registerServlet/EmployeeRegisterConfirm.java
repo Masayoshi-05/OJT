@@ -52,13 +52,13 @@ public class EmployeeRegisterConfirm extends HttpServlet {
 		errorValues.setBirthdayError(EmployeeValidator.validateDate(employee.getBirthday()));
 		errorValues.setJoinDateError(EmployeeValidator.validateDate(employee.getJoinDate()));
 
-		if (errorValues.isHasError()) {
-			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.nullDisplay(errorValues.getEmployeeNumError()));
-			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.nullDisplay(errorValues.getKanjiNameError()));
-			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.nullDisplay(errorValues.getRomanNameError()));
-			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.nullDisplay(errorValues.getEmailError()));
-			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.nullDisplay(errorValues.getBirthdayError()));
-			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.nullDisplay(errorValues.getJoinDateError()));
+		if (errorValues.hasError()) {
+			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
+			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.getKanjiNameError());
+			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
+			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
+			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
+			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
 			
 			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;

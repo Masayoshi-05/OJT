@@ -46,20 +46,18 @@ public class EmployeeRegisterInput extends HttpServlet {
 
 		ErrorValues errorValues = new ErrorValues();
 		errorValues.setEmployeeNumError(EmployeeValidator.validateEmployeeNum(employee.getEmployeeNum()));
-		errorValues.setKanjiNameError(
-				EmployeeValidator.validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
-		errorValues.setRomanNameError(
-				EmployeeValidator.validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
+		errorValues.setKanjiNameError(EmployeeValidator.validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
+		errorValues.setRomanNameError(EmployeeValidator.validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
 		errorValues.setEmailError(EmployeeValidator.validateEmail(employee.getEmail()));
 		errorValues.setBirthdayError(EmployeeValidator.validateDate(employee.getBirthday()));
 		errorValues.setJoinDateError(EmployeeValidator.validateDate(employee.getJoinDate()));
 		
-		request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.nullDisplay(errorValues.getEmployeeNumError()));
-		request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.nullDisplay(errorValues.getKanjiNameError()));
-		request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.nullDisplay(errorValues.getRomanNameError()));
-		request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.nullDisplay(errorValues.getEmailError()));
-		request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.nullDisplay(errorValues.getBirthdayError()));
-		request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.nullDisplay(errorValues.getJoinDateError()));
+		request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
+		request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.getKanjiNameError());
+		request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
+		request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
+		request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
+		request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
 		
 		request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 	}
