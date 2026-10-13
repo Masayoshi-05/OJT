@@ -1,6 +1,8 @@
 package registerServlet;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import definition.ErrorKeys;
 import definition.Paths;
+import employeeManagement.DBConnection;
+import employeeManagement.DBControl;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
 import validator.EmployeeValidator;
@@ -53,7 +57,14 @@ public class EmoployeeRegisterComplete extends HttpServlet {
 			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;
 		} else {
-			request.getRequestDispatcher(Paths.REGISTER_COMPLETE_PATH).forward(request, response);
+			try(Connection connection = DBConnection.getConnection();) {
+				DBControl dbControl = new DBControl();
+				dbControl.insertEmployee(connection,DBControl.getInsertSQL(),employee);
+				EmployeeSession.removeEmployee(request);
+				request.getRequestDispatcher(Paths.REGISTER_COMPLETE_PATH).forward(request, response);
+			} catch (SQLException e) {
+				throw new ServletException(e);
+			}
 		}
 	}
 
