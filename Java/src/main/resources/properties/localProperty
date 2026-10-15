@@ -1,0 +1,3 @@
+url=jdbc:mysql://localhost:3306/employeemanagement
+user=root
+password=tamaten468@SQL

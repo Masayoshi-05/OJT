@@ -11,9 +11,6 @@
 				<title>確認画面</title>
 
 				<link rel="stylesheet" href="css/style.css">
-
-				<script src="Error.js" defer></script>
-
 			</head>
 
 			<body>

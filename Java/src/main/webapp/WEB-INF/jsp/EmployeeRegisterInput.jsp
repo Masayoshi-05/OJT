@@ -114,7 +114,6 @@
 				</div>
 			</form>
 			<script>
-
 				const form =
 					document.getElementById("employeeForm");
 

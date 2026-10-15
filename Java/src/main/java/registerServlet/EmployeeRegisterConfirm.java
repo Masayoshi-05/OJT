@@ -1,6 +1,8 @@
 package registerServlet;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import definition.EmployeeKeys;
 import definition.ErrorKeys;
 import definition.Paths;
+import employeeManagement.DBConnection;
+import employeeManagement.DbAccessor;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
 import validator.EmployeeValidator;
@@ -23,7 +27,6 @@ import validator.ErrorValues;
 public class EmployeeRegisterConfirm extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	
 	public EmployeeRegisterConfirm() {
 		super();
 	}
@@ -41,25 +44,30 @@ public class EmployeeRegisterConfirm extends HttpServlet {
 		employee.setEmail(request.getParameter(EmployeeKeys.EMAIL));
 		employee.setBirthday(request.getParameter(EmployeeKeys.BIRTHDAY));
 		employee.setJoinDate(request.getParameter(EmployeeKeys.JOIN_DATE));
-		
-		EmployeeSession.setEmployee(request,employee);
-		
-		ErrorValues errorValues = new ErrorValues();
-		errorValues.setEmployeeNumError(EmployeeValidator.validateEmployeeNum(employee.getEmployeeNum()));
-		errorValues.setKanjiNameError(EmployeeValidator.validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
-		errorValues.setRomanNameError(EmployeeValidator.validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
-		errorValues.setEmailError(EmployeeValidator.validateEmail(employee.getEmail()));
-		errorValues.setBirthdayError(EmployeeValidator.validateDate(employee.getBirthday()));
-		errorValues.setJoinDateError(EmployeeValidator.validateDate(employee.getJoinDate()));
 
+		EmployeeSession.setEmployee(request, employee);
+
+		ErrorValues errorValues = new ErrorValues();
+		EmployeeValidator.callValidators(employee, errorValues);
+		
+		if (!errorValues.hasError()) {
+			try {
+			Connection connection = DBConnection.getConnection();
+			DbAccessor dbAccessor = new DbAccessor();
+			errorValues.setEmployeeNumError(dbAccessor.checkDuplication(connection, employee.getEmail(), EmployeeKeys.EMPLOYEE_NUM));
+			errorValues.setEmailError(dbAccessor.checkDuplication(connection, employee.getEmail(), EmployeeKeys.EMAIL));
+			} catch (SQLException | ClassNotFoundException e) {
+				request.getRequestDispatcher(Paths.ERROR_PATH).forward(request, response);
+			}
+		}
+		
 		if (errorValues.hasError()) {
 			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
-			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.getKanjiNameError());
+			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
 			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
 			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
 			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
 			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
-			
 			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;
 		} else {

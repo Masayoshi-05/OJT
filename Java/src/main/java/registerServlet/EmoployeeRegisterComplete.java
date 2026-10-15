@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import definition.ErrorKeys;
 import definition.Paths;
 import employeeManagement.DBConnection;
-import employeeManagement.DBControl;
+import employeeManagement.DbAccessor;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
 import validator.EmployeeValidator;
@@ -37,14 +37,7 @@ public class EmoployeeRegisterComplete extends HttpServlet {
 		Employee employee = EmployeeSession.getEmployee(request);
 
 		ErrorValues errorValues = new ErrorValues();
-		errorValues.setEmployeeNumError(EmployeeValidator.validateEmployeeNum(employee.getEmployeeNum()));
-		errorValues.setKanjiNameError(
-				EmployeeValidator.validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
-		errorValues.setRomanNameError(
-				EmployeeValidator.validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
-		errorValues.setEmailError(EmployeeValidator.validateEmail(employee.getEmail()));
-		errorValues.setBirthdayError(EmployeeValidator.validateDate(employee.getBirthday()));
-		errorValues.setJoinDateError(EmployeeValidator.validateDate(employee.getJoinDate()));
+		EmployeeValidator.callValidators(employee, errorValues);
 
 		if (errorValues.hasError()) {
 			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
@@ -58,12 +51,12 @@ public class EmoployeeRegisterComplete extends HttpServlet {
 			return;
 		} else {
 			try(Connection connection = DBConnection.getConnection();) {
-				DBControl dbControl = new DBControl();
-				dbControl.insertEmployee(connection,DBControl.getInsertSQL(),employee);
+				DbAccessor dbControl = new DbAccessor();
+				dbControl.insertEmployee(connection,employee);
 				EmployeeSession.removeEmployee(request);
 				request.getRequestDispatcher(Paths.REGISTER_COMPLETE_PATH).forward(request, response);
-			} catch (SQLException e) {
-				throw new ServletException(e);
+			} catch (SQLException | ClassNotFoundException e) {
+				request.getRequestDispatcher(Paths.ERROR_PATH).forward(request, response);
 			}
 		}
 	}

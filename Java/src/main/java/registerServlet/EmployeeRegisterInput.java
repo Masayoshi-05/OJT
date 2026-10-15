@@ -1,6 +1,8 @@
 package registerServlet;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,8 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import definition.EmployeeKeys;
 import definition.ErrorKeys;
 import definition.Paths;
+import employeeManagement.DBConnection;
+import employeeManagement.DbAccessor;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
 import validator.EmployeeValidator;
@@ -45,12 +50,18 @@ public class EmployeeRegisterInput extends HttpServlet {
 		Employee employee = EmployeeSession.getEmployee(request);
 
 		ErrorValues errorValues = new ErrorValues();
-		errorValues.setEmployeeNumError(EmployeeValidator.validateEmployeeNum(employee.getEmployeeNum()));
-		errorValues.setKanjiNameError(EmployeeValidator.validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
-		errorValues.setRomanNameError(EmployeeValidator.validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
-		errorValues.setEmailError(EmployeeValidator.validateEmail(employee.getEmail()));
-		errorValues.setBirthdayError(EmployeeValidator.validateDate(employee.getBirthday()));
-		errorValues.setJoinDateError(EmployeeValidator.validateDate(employee.getJoinDate()));
+		EmployeeValidator.callValidators(employee, errorValues);
+		
+		if (!errorValues.hasError()) {
+			try {
+			Connection connection = DBConnection.getConnection();
+			DbAccessor dbAccessor = new DbAccessor();
+			errorValues.setEmployeeNumError(dbAccessor.checkDuplication(connection, employee.getEmail(), EmployeeKeys.EMPLOYEE_NUM));
+			errorValues.setEmailError(dbAccessor.checkDuplication(connection, employee.getEmail(), EmployeeKeys.EMAIL));
+			} catch (SQLException | ClassNotFoundException e) {
+				request.getRequestDispatcher(Paths.ERROR_PATH).forward(request, response);
+			}
+		}
 		
 		request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
 		request.setAttribute(ErrorKeys.KANJI_NAME_ERROR,errorValues.getKanjiNameError());

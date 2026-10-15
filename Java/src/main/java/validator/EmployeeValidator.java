@@ -1,14 +1,11 @@
 package validator;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
-import employeeManagement.DBConnection;
-import employeeManagement.DBControl;
+import employeeManagement.Employee;
 
 /**
 * 社員情報の各入力値に対するバリデーションチェック
@@ -21,7 +18,16 @@ public class EmployeeValidator {
 	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd")
 			.withResolverStyle(ResolverStyle.STRICT);
 	private final static String ERROR_DATE = "日付の形式が不正です。";
-	private final static String ERROR_DUPRICATION = "既に使用されている値です。";
+
+	
+	public static void callValidators(Employee employee, ErrorValues errorValues){
+		errorValues.setEmployeeNumError(validateEmployeeNum(employee.getEmployeeNum()));
+		errorValues.setKanjiNameError(validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
+		errorValues.setRomanNameError(validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
+		errorValues.setEmailError(validateEmail(employee.getEmail()));
+		errorValues.setBirthdayError(validateDate(employee.getBirthday()));
+		errorValues.setJoinDateError(validateDate(employee.getJoinDate()));
+	}
 
 	/**
 	* 社員番号のバリデーションチェック
@@ -36,13 +42,6 @@ public class EmployeeValidator {
 		} else if (!employeeNum.matches("[0-9]+")) {
 			return ERROR_INVALID_CHARACTER;
 		} else {
-			try (Connection connection = DBConnection.getConnection();) {
-				if (DBControl.checkDuplication(connection, DBControl.getEmployeeNumSelectSQL(), employeeNum)) {
-					return ERROR_DUPRICATION;
-				}
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
 		}
 		return null;
 	}
@@ -90,14 +89,6 @@ public class EmployeeValidator {
 				return ERROR_EMAIL;
 			} else if (email.length() > 100) {
 				return ERROR_TOO_LONG;
-			}else {
-				try (Connection connection = DBConnection.getConnection();) {
-					if (DBControl.checkDuplication(connection, DBControl.getEmailSelectSQL(), email)) {
-						return ERROR_DUPRICATION;
-					}
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
 			}
 		}
 		return null;
