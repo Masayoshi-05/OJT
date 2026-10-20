@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DBConnection {
+/*
+ * DB接続を担当するクラス
+ */
+public class DbConnection {
 
 	public static Connection getConnection() throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		return DriverManager.getConnection(DbProperties.getURL(), DbProperties.getUSER(),
-				DbProperties.getPASSWORD());
+		return DriverManager.getConnection(DbProperties.getUrl(), DbProperties.getUser(),
+				DbProperties.getPassword());
 	}
 }

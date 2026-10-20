@@ -6,52 +6,50 @@ import java.util.Properties;
 
 import environment.Environment;
 
+/*
+ * DB接続のためのプロパティをファイルから取得するクラス
+ */
 public class DbProperties {
 	private static Properties property = new Properties();
-	private static String URL;
-	private static String USER;
-	private static String PASSWORD;
+	private static String url;
+	private static String user;
+	private static String password;
 	private static String fileName;
 
 	static {
-		switch (Environment.getEnvironment()) {
+		switch (Environment.getEnvironment("APP_ENV")) {
 		case "aws":
-			fileName = "properties/awsProperty";
+			fileName = "properties/aws.properties";
 			break;
 
 		default:
-			fileName = "properties/localProperty";
+			fileName = "properties/local.properties";
 			break;
 		}
-
-		InputStream input = DbProperties.class.getClassLoader().getResourceAsStream(fileName);
-		System.out.println("APP_ENV=" + Environment.getEnvironment());
-		System.out.println("fileName=" + fileName);
-		System.out.println("input=" + input);
 		
-		try {
+		try(InputStream input = DbProperties.class.getClassLoader().getResourceAsStream(fileName);) {
 			property.load(input);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		URL = property.getProperty("url");
+		url = property.getProperty("url");
 
-		USER = property.getProperty("user");
+		user = property.getProperty("user");
 
-		PASSWORD = property.getProperty("password");
+		password = property.getProperty("password");
 	}
 	
-	public static String getURL() {
-		return URL;
+	public static String getUrl() {
+		return url;
 	}
 
-	public static String getUSER() {
-		return USER;
+	public static String getUser() {
+		return user;
 	}
 
-	public static String getPASSWORD() {
-		return PASSWORD;
+	public static String getPassword() {
+		return password;
 	}
 }
 

@@ -15,18 +15,20 @@ public class EmployeeValidator {
 	private final static String ERROR_TOO_LONG = "登録可能な文字数を超過しています。";
 	private final static String ERROR_INVALID_CHARACTER = "使用できない文字が含まれています。";
 	private final static String ERROR_EMAIL = "メールアドレスの形式が不正です。";
+	private final static String ERROR_DATE = "日付の形式が不正です。";
+	
 	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd")
 			.withResolverStyle(ResolverStyle.STRICT);
-	private final static String ERROR_DATE = "日付の形式が不正です。";
 
-	
-	public static void callValidators(Employee employee, ErrorValues errorValues){
+	public static ErrorValues validation(Employee employee) {
+		ErrorValues errorValues = new ErrorValues();
 		errorValues.setEmployeeNumError(validateEmployeeNum(employee.getEmployeeNum()));
 		errorValues.setKanjiNameError(validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
 		errorValues.setRomanNameError(validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
 		errorValues.setEmailError(validateEmail(employee.getEmail()));
 		errorValues.setBirthdayError(validateDate(employee.getBirthday()));
 		errorValues.setJoinDateError(validateDate(employee.getJoinDate()));
+		return errorValues;
 	}
 
 	/**
