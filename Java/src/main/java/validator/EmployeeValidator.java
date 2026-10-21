@@ -36,7 +36,7 @@ public class EmployeeValidator {
 	* @param employeeNum 社員番号
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	public static String validateEmployeeNum(String employeeNum) {
+	private static String validateEmployeeNum(String employeeNum) {
 		if (employeeNum == null || employeeNum.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (employeeNum.length() > 4) {
@@ -54,7 +54,7 @@ public class EmployeeValidator {
 	* @param kanjiFirstName 漢字名
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	public static String validateKanjiName(String kanjiLastName, String kanjiFirstName) {
+	private static String validateKanjiName(String kanjiLastName, String kanjiFirstName) {
 		if (kanjiLastName == null || kanjiFirstName == null || kanjiLastName.isEmpty() || kanjiFirstName.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (kanjiLastName.length() > 30 || kanjiFirstName.length() > 30) {
@@ -69,7 +69,7 @@ public class EmployeeValidator {
 	* @param romanFirstName ローマ字名
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	public static String validateRomanName(String romanLastName, String romanFirstName) {
+	private static String validateRomanName(String romanLastName, String romanFirstName) {
 		if (romanLastName == null || romanFirstName == null || romanLastName.isEmpty() || romanFirstName.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (romanLastName.length() > 30 || romanFirstName.length() > 30) {
@@ -85,7 +85,7 @@ public class EmployeeValidator {
 	* @param email メールアドレス
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	public static String validateEmail(String email) {
+	private static String validateEmail(String email) {
 		if (email != null && !email.isEmpty()) {
 			if (!email.matches("^[A-Za-z0-9][A-Za-z0-9._-]*[A-Za-z0-9]$")) {
 				return ERROR_EMAIL;
@@ -101,7 +101,7 @@ public class EmployeeValidator {
 	* @param date 日付
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	public static String validateDate(String date) {
+	private static String validateDate(String date) {
 		if (date != null && !date.isEmpty()) {
 			try {
 				LocalDate.parse(date, DATE_FORMATTER);

@@ -5,17 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 
-/*
+/**
  * DB操作を担当するクラス
+ * @param connection
  */
 public class DbAccessor {
 	private static final String INSERT_SQL = "INSERT INTO employee (employeeNum,kanjiLastName,kanjiFirstName,romanLastName,romanFirstName,email,birthday,joinDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_SQL = "UPDATE employee SET employeeNum = ?, kanjiLastName = ?, kanjiFirstName = ?, romanLastName = ?, romanFirstName = ?, email = ?, birthday = ?, joinDate = ? WHERE id = ?";
 	private static final String DELETE_SQL = "DELETE FROM employee WHERE id = ?";
-	private static final String SELECT_SQL = "SELECT ? FROM employee";
+//	private static final String SELECT_SQL = "SELECT ? FROM employee";
 	private static final String EMPLOYEE_NUM_SELECT_SQL = "SELECT COUNT(*) FROM employee WHERE employeeNum = ?";
 	private static final String EMAIL_SELECT_SQL = "SELECT COUNT(*) FROM employee WHERE email = ?";
 
@@ -25,8 +24,11 @@ public class DbAccessor {
 	public DbAccessor(Connection connection) {
 		this.connection = connection;
 	}
-	/*
+
+	/**
 	 * 社員情報登録メソッド
+	 * @param employee
+	 * @throws SQLException
 	 */
 	public void insertEmployee(Employee employee) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
@@ -55,8 +57,10 @@ public class DbAccessor {
 		}
 	}
 
-	/*
+	/**
 	 * 社員情報更新メソッド
+	 * @param employee
+	 * @throws SQLException
 	 */
 	public void updateEmployee(Employee employee) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
@@ -84,9 +88,11 @@ public class DbAccessor {
 			statement.executeUpdate();
 		}
 	}
-	
-	/*
+
+	/**
 	 * 社員情報削除メソッド
+	 * @param employee
+	 * @throws SQLException
 	 */
 	public void deleteEmployee(Employee employee) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
@@ -95,44 +101,58 @@ public class DbAccessor {
 		}
 	}
 
-	public List<Employee> makeEmployeeList() throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)){
-			statement.setString(1, "*");
-			ResultSet resultSet = statement.executeQuery();
-			List<Employee> employees = new ArrayList<>();
-			while (resultSet.next()) {
-				Employee employee = new Employee();
-				employee.setID(resultSet.getInt("id"));
-				employee.setEmployeeNum(resultSet.getString("employeenum"));
-				employee.setKanjiLastName(resultSet.getString("kanjiLastName"));
-				employee.setKanjiFirstName(resultSet.getString("setKanjiFirstName"));
-				employee.setRomanLastName(resultSet.getString("romanLastName"));
-				employee.setRomanFirstName(resultSet.getString("RomanFirstName"));
-				employee.setBirthday(resultSet.getString("Birthday"));
-				employee.setJoinDate(resultSet.getString("JoinDate"));
-				employees.add(employee);
-			}
-			return employees;
-		}
-	}
-	
-	/*
+//	public List<Employee> makeEmployeeList() throws SQLException {
+//		try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
+//			statement.setString(1, "*");
+//			ResultSet resultSet = statement.executeQuery();
+//			List<Employee> employees = new ArrayList<>();
+//			while (resultSet.next()) {
+//				Employee employee = new Employee();
+//				employee.setID(resultSet.getInt("id"));
+//				employee.setEmployeeNum(resultSet.getString("employeenum"));
+//				employee.setKanjiLastName(resultSet.getString("kanjiLastName"));
+//				employee.setKanjiFirstName(resultSet.getString("setKanjiFirstName"));
+//				employee.setRomanLastName(resultSet.getString("romanLastName"));
+//				employee.setRomanFirstName(resultSet.getString("RomanFirstName"));
+//				employee.setBirthday(resultSet.getString("Birthday"));
+//				employee.setJoinDate(resultSet.getString("JoinDate"));
+//				employees.add(employee);
+//			}
+//			return employees;
+//		}
+//	}
+
+	/**
 	 * 社員番号の重複チェック
+	 * @param value
+	 * @return 重複があればエラーメッセージ、なければnull
+	 * @throws SQLException
 	 */
 	public String checkEmployeeNumDuplication(String value) throws SQLException {
 		String employeeNumSql = EMPLOYEE_NUM_SELECT_SQL;
 		return checkDuplication(connection, employeeNumSql, value);
 	}
-	
-	/*
+
+	/**
 	 * メールアドレスの重複チェック
+	 * @param value
+	 * @return 重複があればエラーメッセージ、なければnull
+	 * @throws SQLException
 	 */
 	public String checkEmailDuplication(String value) throws SQLException {
 		String emailSql = EMAIL_SELECT_SQL;
 		return checkDuplication(connection, emailSql, value);
 	}
 
-	public String checkDuplication(Connection connection, String sql, String Value) throws SQLException {
+	/**
+	 * 
+	 * @param connection
+	 * @param sql
+	 * @param Value
+	 * @return 重複があればエラーメッセージ、なければnull
+	 * @throws SQLException
+	 */
+	private String checkDuplication(Connection connection, String sql, String Value) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setString(1, Value);
 			ResultSet resultSet = statement.executeQuery();

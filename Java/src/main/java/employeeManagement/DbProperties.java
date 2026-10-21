@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import environment.Environment;
 
-/*
+/**
  * DB接続のためのプロパティをファイルから取得するクラス
  */
 public class DbProperties {
@@ -14,9 +14,10 @@ public class DbProperties {
 	private static String url;
 	private static String user;
 	private static String password;
-	private static String fileName;
 
+	//環境変数に合わせたプロパティファイルを取得
 	static {
+		String fileName;
 		switch (Environment.getEnvironment("APP_ENV")) {
 		case "aws":
 			fileName = "properties/aws.properties";
@@ -26,7 +27,6 @@ public class DbProperties {
 			fileName = "properties/local.properties";
 			break;
 		}
-		
 		try(InputStream input = DbProperties.class.getClassLoader().getResourceAsStream(fileName);) {
 			property.load(input);
 		} catch (IOException e) {
@@ -39,6 +39,7 @@ public class DbProperties {
 
 		password = property.getProperty("password");
 	}
+	
 	
 	public static String getUrl() {
 		return url;
