@@ -1,0 +1,7 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="4.0">
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/WEB-INF/jsp/Error.jsp</location>
+	</error-page>
+</web-app>

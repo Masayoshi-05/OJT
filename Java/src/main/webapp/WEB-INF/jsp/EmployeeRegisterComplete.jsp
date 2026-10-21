@@ -12,7 +12,9 @@
 	<body>
 		<div class="message">社員情報の登録が完了しました。</div>
 
-		<button type="submit">一覧表示画面に戻る</button>
+		<form action="<%= request.getContextPath() %>/EmployeeList" method="get">
+			<button type="submit">一覧表示画面に戻る</button>
+		</form>
 	</body>
 
 	</html>
