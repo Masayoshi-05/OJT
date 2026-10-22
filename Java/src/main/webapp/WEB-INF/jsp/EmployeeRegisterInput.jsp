@@ -122,7 +122,7 @@
 
 					const employeeNum = document.getElementById("employeeNum").value;
 					const employeeNumError = validateEmployeeNum(employeeNum);
-					document.getElementById("employeeNumError").textContent; = employeeNumError;
+					document.getElementById("employeeNumError").textContent = employeeNumError;
 					if (employeeNumError !== "") {
 						hasError = true;
 					}

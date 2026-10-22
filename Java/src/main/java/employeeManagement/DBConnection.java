@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * DB接続を担当するクラス
+ * DB接続を担当する
  */
 public class DbConnection {
 

@@ -1,8 +1,8 @@
 package definition;
 
 /**
-* 社員情報の各パラメータに対するエラー名として使用するキーを定義するクラス
-*/
+ * 社員情報の各パラメータに対するエラー名として使用するキーを定義する
+ */
 public class ErrorKeys {
 	//各項目に対するエラー
 	public static final String EMPLOYEE_NUM_ERROR = "employeeNumError";

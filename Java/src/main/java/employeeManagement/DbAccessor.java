@@ -5,16 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * DB操作を担当するクラス
- * @param connection
+ * DB操作を担当する
  */
 public class DbAccessor {
 	private static final String INSERT_SQL = "INSERT INTO employee (employeeNum,kanjiLastName,kanjiFirstName,romanLastName,romanFirstName,email,birthday,joinDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_SQL = "UPDATE employee SET employeeNum = ?, kanjiLastName = ?, kanjiFirstName = ?, romanLastName = ?, romanFirstName = ?, email = ?, birthday = ?, joinDate = ? WHERE id = ?";
 	private static final String DELETE_SQL = "DELETE FROM employee WHERE id = ?";
-//	private static final String SELECT_SQL = "SELECT ? FROM employee";
+	private static final String SELECT_SQL = "SELECT ? FROM employee";
 	private static final String EMPLOYEE_NUM_SELECT_SQL = "SELECT COUNT(*) FROM employee WHERE employeeNum = ?";
 	private static final String EMAIL_SELECT_SQL = "SELECT COUNT(*) FROM employee WHERE email = ?";
 
@@ -26,7 +27,7 @@ public class DbAccessor {
 	}
 
 	/**
-	 * 社員情報登録メソッド
+	 * 社員情報登録
 	 * @param employee
 	 * @throws SQLException
 	 */
@@ -58,7 +59,7 @@ public class DbAccessor {
 	}
 
 	/**
-	 * 社員情報更新メソッド
+	 * 社員情報更新
 	 * @param employee
 	 * @throws SQLException
 	 */
@@ -90,7 +91,7 @@ public class DbAccessor {
 	}
 
 	/**
-	 * 社員情報削除メソッド
+	 * 社員情報削除
 	 * @param employee
 	 * @throws SQLException
 	 */
@@ -101,26 +102,31 @@ public class DbAccessor {
 		}
 	}
 
-//	public List<Employee> makeEmployeeList() throws SQLException {
-//		try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
-//			statement.setString(1, "*");
-//			ResultSet resultSet = statement.executeQuery();
-//			List<Employee> employees = new ArrayList<>();
-//			while (resultSet.next()) {
-//				Employee employee = new Employee();
-//				employee.setID(resultSet.getInt("id"));
-//				employee.setEmployeeNum(resultSet.getString("employeenum"));
-//				employee.setKanjiLastName(resultSet.getString("kanjiLastName"));
-//				employee.setKanjiFirstName(resultSet.getString("setKanjiFirstName"));
-//				employee.setRomanLastName(resultSet.getString("romanLastName"));
-//				employee.setRomanFirstName(resultSet.getString("RomanFirstName"));
-//				employee.setBirthday(resultSet.getString("Birthday"));
-//				employee.setJoinDate(resultSet.getString("JoinDate"));
-//				employees.add(employee);
-//			}
-//			return employees;
-//		}
-//	}
+	/**
+	 * DBから社員情報を取得し、リストにして返す
+	 * @return employees List
+	 * @throws SQLException
+	 */
+	public List<Employee> makeEmployeeList() throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(SELECT_SQL)) {
+			statement.setString(1, "*");
+			ResultSet resultSet = statement.executeQuery();
+			List<Employee> employees = new ArrayList<>();
+			while (resultSet.next()) {
+				Employee employee = new Employee();
+				employee.setID(resultSet.getInt("id"));
+				employee.setEmployeeNum(resultSet.getString("employeenum"));
+				employee.setKanjiLastName(resultSet.getString("kanjiLastName"));
+				employee.setKanjiFirstName(resultSet.getString("setKanjiFirstName"));
+				employee.setRomanLastName(resultSet.getString("romanLastName"));
+				employee.setRomanFirstName(resultSet.getString("RomanFirstName"));
+				employee.setBirthday(resultSet.getString("Birthday"));
+				employee.setJoinDate(resultSet.getString("JoinDate"));
+				employees.add(employee);
+			}
+			return employees;
+		}
+	}
 
 	/**
 	 * 社員番号の重複チェック
@@ -145,7 +151,7 @@ public class DbAccessor {
 	}
 
 	/**
-	 * 
+	 * 重複チェック処理
 	 * @param connection
 	 * @param sql
 	 * @param Value

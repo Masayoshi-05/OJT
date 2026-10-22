@@ -1,5 +1,8 @@
 package validator;
 
+/**
+ * エラーの値を保持する
+ */
 public class ErrorValues {
 	private String employeeNumError;
 	private String kanjiNameError;

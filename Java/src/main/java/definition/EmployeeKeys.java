@@ -1,10 +1,11 @@
 package definition;
 
 /**
-* 社員情報のパラメータ名や属性名として使用するキーを定義するクラス
-*/
+ * 社員情報のパラメータ名や属性名として使用するキーを定義する
+ */
 public class EmployeeKeys {
 	//社員情報
+	public static final String ID = "iD";
 	public static final String EMPLOYEE_NUM = "employeeNum";
 	public static final String KANJI_LAST_NAME = "kanjiLastName";
 	public static final String KANJI_FIRST_NAME = "kanjiFirstName";

@@ -20,8 +20,8 @@ import employeeManagement.EmployeeSession;
 import validator.EmployeeValidator;
 import validator.ErrorValues;
 
-/*
- * 確認画面を表示するServlet
+/**
+ * 登録機能:確認画面のServlet
  */
 @WebServlet("/EmployeeRegisterConfirm")
 public class EmployeeRegisterConfirm extends HttpServlet {

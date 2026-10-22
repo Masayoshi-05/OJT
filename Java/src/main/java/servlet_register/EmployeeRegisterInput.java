@@ -12,8 +12,8 @@ import definition.ErrorKeys;
 import definition.Paths;
 import employeeManagement.EmployeeSession;
 
-/*
- * 入力画面を表示するServlet
+/**
+ * 登録機能:入力画面のServlet
  */
 @WebServlet("/EmployeeRegisterInput")
 public class EmployeeRegisterInput extends HttpServlet {

@@ -1,7 +1,7 @@
 package employeeManagement;
 
 /**
-* 社員情報を保持するクラス
+* 社員情報を保持する
 */
 public class Employee {
 	private int iD;

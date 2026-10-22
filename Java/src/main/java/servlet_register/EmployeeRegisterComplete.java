@@ -20,7 +20,7 @@ import validator.EmployeeValidator;
 import validator.ErrorValues;
 
 /**
- * 完了画面を表示するServlet
+ * 登録機能:完了画面のServlet
  */
 @WebServlet("/EmployeeRegisterComplete")
 public class EmployeeRegisterComplete extends HttpServlet {
@@ -35,7 +35,18 @@ public class EmployeeRegisterComplete extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 
 		Employee employee = EmployeeSession.getEmployee(request);
+
 		ErrorValues errorValues = EmployeeValidator.validation(employee);
+
+		if (!errorValues.hasError()) {
+			try (Connection connection = DbConnection.getConnection();) {
+				DbAccessor dbAccessor = new DbAccessor(connection);
+				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
+				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
+			} catch (SQLException | ClassNotFoundException e) {
+				throw new ServletException(e);
+			}
+		}
 
 		if (errorValues.hasError()) {
 			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
@@ -48,24 +59,13 @@ public class EmployeeRegisterComplete extends HttpServlet {
 			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;
 		}
-		
-		if (!errorValues.hasError()) {
-			try(Connection connection = DbConnection.getConnection();) {
-			DbAccessor dbAccessor = new DbAccessor(connection);
-			errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
-			errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
-			} catch (SQLException | ClassNotFoundException e) {
-				throw new ServletException(e);
-			}
-		}
-		
+
 		try (Connection connection = DbConnection.getConnection();) {
 			DbAccessor dbAccessor = new DbAccessor(connection);
 			dbAccessor.insertEmployee(employee);
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new ServletException(e);
 		}
-
 		EmployeeSession.removeEmployee(request);
 		request.getRequestDispatcher(Paths.REGISTER_COMPLETE_PATH).forward(request, response);
 	}

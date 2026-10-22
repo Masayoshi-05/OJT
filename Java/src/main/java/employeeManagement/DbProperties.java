@@ -7,7 +7,7 @@ import java.util.Properties;
 import environment.Environment;
 
 /**
- * DB接続のためのプロパティをファイルから取得するクラス
+ * DB接続のためのプロパティをファイルから取得する
  */
 public class DbProperties {
 	private static Properties property = new Properties();
