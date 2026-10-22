@@ -38,30 +38,24 @@ public class EmployeeRegisterComplete extends HttpServlet {
 
 		ErrorValues errorValues = EmployeeValidator.validation(employee);
 
-		if (!errorValues.hasError()) {
-			try (Connection connection = DbConnection.getConnection();) {
-				DbAccessor dbAccessor = new DbAccessor(connection);
-				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
-				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
-			} catch (SQLException | ClassNotFoundException e) {
-				throw new ServletException(e);
-			}
-		}
-
-		if (errorValues.hasError()) {
-			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
-			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
-			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
-			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
-			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
-			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
-
-			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
-			return;
-		}
-
 		try (Connection connection = DbConnection.getConnection();) {
 			DbAccessor dbAccessor = new DbAccessor(connection);
+			if (!errorValues.hasError()) {
+				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
+				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
+			}
+			if (errorValues.hasError()) {
+				request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
+				request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
+				request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
+				request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
+				request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
+				request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
+
+				request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
+				return;
+			}
+
 			dbAccessor.insertEmployee(employee);
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new ServletException(e);

@@ -154,13 +154,13 @@ public class DbAccessor {
 	 * 重複チェック処理
 	 * @param connection
 	 * @param sql
-	 * @param Value
+	 * @param value
 	 * @return 重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
 	 */
-	private String checkDuplication(Connection connection, String sql, String Value) throws SQLException {
+	private String checkDuplication(Connection connection, String sql, String value) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, Value);
+			statement.setString(1, value);
 			ResultSet resultSet = statement.executeQuery();
 			resultSet.next();
 			if (resultSet.getInt(1) > 0) {
