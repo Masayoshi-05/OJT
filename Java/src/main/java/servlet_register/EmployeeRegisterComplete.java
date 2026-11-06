@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import definition.EmployeeKeys;
 import definition.ErrorKeys;
 import definition.Paths;
 import employeeManagement.DbAccessor;
@@ -34,9 +35,10 @@ public class EmployeeRegisterComplete extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
-		Employee employee = EmployeeSession.getEmployee(request);
+		Employee employee = EmployeeSession.getEmployee(request,EmployeeKeys.EMPLOYEE);
 
-		ErrorValues errorValues = EmployeeValidator.validation(employee);
+		EmployeeValidator employeeValidator = new EmployeeValidator();
+		ErrorValues errorValues = employeeValidator.validation(employee);
 
 		try (Connection connection = DbConnection.getConnection();) {
 			DbAccessor dbAccessor = new DbAccessor(connection);
@@ -60,7 +62,7 @@ public class EmployeeRegisterComplete extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new ServletException(e);
 		}
-		EmployeeSession.removeEmployee(request);
+		EmployeeSession.removeEmployee(request,EmployeeKeys.EMPLOYEE);
 		request.getRequestDispatcher(Paths.REGISTER_COMPLETE_PATH).forward(request, response);
 	}
 

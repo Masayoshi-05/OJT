@@ -34,7 +34,6 @@ public class EmployeeRegisterConfirm extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-
 		Employee employee = new Employee();
 		employee.setEmployeeNum(request.getParameter(EmployeeKeys.EMPLOYEE_NUM));
 		employee.setKanjiLastName(request.getParameter(EmployeeKeys.KANJI_LAST_NAME));
@@ -45,9 +44,10 @@ public class EmployeeRegisterConfirm extends HttpServlet {
 		employee.setBirthday(request.getParameter(EmployeeKeys.BIRTHDAY));
 		employee.setJoinDate(request.getParameter(EmployeeKeys.JOIN_DATE));
 
-		EmployeeSession.setEmployee(request, employee);
+		EmployeeSession.setEmployee(request,EmployeeKeys.EMPLOYEE,employee);
 
-		ErrorValues errorValues = EmployeeValidator.validation(employee);
+		EmployeeValidator employeeValidator = new EmployeeValidator();
+		ErrorValues errorValues = employeeValidator.validation(employee);
 		
 		if (!errorValues.hasError()) {
 			try(Connection connection = DbConnection.getConnection();) {

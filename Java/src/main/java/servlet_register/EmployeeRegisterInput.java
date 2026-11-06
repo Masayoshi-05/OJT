@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import definition.EmployeeKeys;
 import definition.ErrorKeys;
 import definition.Paths;
 import employeeManagement.EmployeeSession;
@@ -34,7 +35,7 @@ public class EmployeeRegisterInput extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		EmployeeSession.removeEmployee(request);
+		EmployeeSession.removeEmployee(request,EmployeeKeys.EMPLOYEE);
 		
 		this.clearErrors(request);
 		
