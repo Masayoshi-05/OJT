@@ -8,8 +8,10 @@ public class Employee {
 	private String employeeNum;
 	private String kanjiFirstName;
 	private String kanjiLastName;
+	private String kanjiName;
 	private String romanFirstName;
 	private String romanLastName;
+	private String romanName;
 	private String email;
 	private String birthday;
 	private String joinDate;
@@ -46,6 +48,14 @@ public class Employee {
 		this.kanjiLastName = kanjiLastName;
 	}
 
+	public String getKanjiName() {
+		return kanjiName;
+	}
+
+	public void setKanjiName(String kanjiName) {
+		this.kanjiName = kanjiName;
+	}
+	
 	public String getRomanFirstName() {
 		return romanFirstName;
 	}
@@ -62,6 +72,14 @@ public class Employee {
 		this.romanLastName = romanLastName;
 	}
 
+	public String getRomanName() {
+		return romanName;
+	}
+
+	public void setRomanName(String romanName) {
+		this.romanName = romanName;
+	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -84,6 +102,5 @@ public class Employee {
 
 	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
-	}
-
+	}	
 }

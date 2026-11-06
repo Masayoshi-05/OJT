@@ -7,8 +7,8 @@
 
 .formRow {
 	display: grid;
-	grid-template-columns: 200px 320px;
-	column-gap: 80px;
+	grid-template-columns: 180px 380px;
+	column-gap: 140px;
 }
 
 .formRow label {
@@ -33,7 +33,7 @@
 
 .nameInputs input {
 	box-sizing: border-box;
-	width: 141px;
+	width: 181px;
 }
 
 .displayArea {
@@ -56,7 +56,7 @@
 }
 
 .requiredText {
-	width: 600px;
+	width: 725px;
 	text-align: right;
 	color: red;
 	font-size: 13px;
@@ -65,7 +65,7 @@
 }
 
 .pageHeader {
-	width: 600px;
+	width: 725px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -84,12 +84,84 @@
 }
 
 .singleButtonArea {
-	width: 600px;
+	width: 725px;
 	text-align: right;
 }
 
 .doubleButtonArea {
-	width: 600px;
+	width: 725px;
 	display: flex;
 	justify-content: space-between;
+}
+
+.searchArea {
+    width: 725px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.searchArea summary {
+    text-align: center;
+	border: 1px solid rgb(0, 0, 0);
+    padding: 10px;
+	cursor: pointer;
+    background-color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+.searchArea table {
+    width: 100%;
+    padding: 10px;
+}
+
+.searchArea td {
+    padding: 5px;
+}
+
+.searchArea input[type="text"] {
+    width: 100%;
+}
+
+.searchButtonArea {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.pagingButtons {
+	width: 725px;
+	gap: 20px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.currentPage {
+	text-align: center;
+}
+
+.displayTotalAndCurrentPage {
+	width: 725px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.pagingButtons {
+	width: 725px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.pageNums {
+	gap: 10px;
+	display: flex;
+}
+
+.pageSkip {
+	gap: 30px;
+	display: flex;
+}
+
+.employeeTable{
+	width: 725px;
 }

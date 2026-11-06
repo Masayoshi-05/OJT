@@ -18,8 +18,8 @@
 				<div class="message">問題が発生しました。</div>
 
 				<div class="singleButtonArea">
-					<form action="<%= request.getContextPath() %>/EmployeeRegisterInput" method="post">
-						<button type="submit">入力画面に戻る</button>
+					<form action="<%= request.getContextPath() %>/EmployeeList" method="get">
+						<button type="submit">一覧表示画面に戻る</button>
 					</form>
 				</div>
 			</body>
