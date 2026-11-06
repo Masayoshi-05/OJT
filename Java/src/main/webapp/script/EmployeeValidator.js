@@ -1,4 +1,3 @@
-
 const ERROR_REQUIRED = "入力必須の項目です。";
 const ERROR_TOO_LONG = "登録可能な文字数を超過しています。";
 const ERROR_INVALID_CHARACTER = "使用できない文字が含まれています。";
@@ -39,20 +38,21 @@ function validateRomanName(lastName, firstName) {
 
 function validateEmail(email) {
     if (email !== "") {
-        if (email.length > 100) {
+		if(email.length > 100){	
             return ERROR_TOO_LONG;
-        } else if (!/^[A-Za-z0-9][A-Za-z0-9._-]*[A-Za-z0-9]$/.test(email)) {
+        } else if (!/^[A-Za-z0-9._@\\-]*$/.test(email)) {
+			return ERROR_INVALID_CHARACTER;
+		} else if (!/^[A-Za-z0-9][A-Za-z0-9._\\-]*[A-Za-z0-9]@[A-Za-z0-9][A-Za-z0-9.]*[A-Za-z0-9]$/.test(email)) {
             return ERROR_EMAIL;
         }
+		return "";
     }
-    return "";
 }
 
 function validateDate(date) {
     if (date !== "") {
         if (!/^[0-2]0[0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[01])$/.test(date)) {
             return ERROR_DATE;
-
         }
     }
     return "";

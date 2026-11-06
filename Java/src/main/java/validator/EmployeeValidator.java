@@ -16,11 +16,10 @@ public class EmployeeValidator {
 	private final static String ERROR_INVALID_CHARACTER = "使用できない文字が含まれています。";
 	private final static String ERROR_EMAIL = "メールアドレスの形式が不正です。";
 	private final static String ERROR_DATE = "日付の形式が不正です。";
-	
 	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd")
 			.withResolverStyle(ResolverStyle.STRICT);
 
-	public static ErrorValues validation(Employee employee) {
+	public ErrorValues validation(Employee employee) {
 		ErrorValues errorValues = new ErrorValues();
 		errorValues.setEmployeeNumError(validateEmployeeNum(employee.getEmployeeNum()));
 		errorValues.setKanjiNameError(validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
@@ -36,14 +35,13 @@ public class EmployeeValidator {
 	* @param employeeNum 社員番号
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	private static String validateEmployeeNum(String employeeNum) {
+	public String validateEmployeeNum(String employeeNum) {
 		if (employeeNum == null || employeeNum.isEmpty()) {
 			return ERROR_REQUIRED;
-		} else if (employeeNum.length() > 4) {
-			return ERROR_TOO_LONG;
 		} else if (!employeeNum.matches("[0-9]+")) {
 			return ERROR_INVALID_CHARACTER;
-		} else {
+		} else if (employeeNum.length() > 4) {
+			return ERROR_TOO_LONG;
 		}
 		return null;
 	}
@@ -54,7 +52,7 @@ public class EmployeeValidator {
 	* @param kanjiFirstName 漢字名
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	private static String validateKanjiName(String kanjiLastName, String kanjiFirstName) {
+	public String validateKanjiName(String kanjiLastName, String kanjiFirstName) {
 		if (kanjiLastName == null || kanjiFirstName == null || kanjiLastName.isEmpty() || kanjiFirstName.isEmpty()) {
 			return ERROR_REQUIRED;
 		} else if (kanjiLastName.length() > 30 || kanjiFirstName.length() > 30) {
@@ -69,13 +67,13 @@ public class EmployeeValidator {
 	* @param romanFirstName ローマ字名
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	private static String validateRomanName(String romanLastName, String romanFirstName) {
+	public String validateRomanName(String romanLastName, String romanFirstName) {
 		if (romanLastName == null || romanFirstName == null || romanLastName.isEmpty() || romanFirstName.isEmpty()) {
 			return ERROR_REQUIRED;
-		} else if (romanLastName.length() > 30 || romanFirstName.length() > 30) {
-			return ERROR_TOO_LONG;
 		} else if (!romanLastName.matches("[A-Za-z]+") || !romanFirstName.matches("[A-Za-z]+")) {
 			return ERROR_INVALID_CHARACTER;
+		} else if (romanLastName.length() > 30 || romanFirstName.length() > 30) {
+			return ERROR_TOO_LONG;
 		}
 		return null;
 	}
@@ -85,9 +83,11 @@ public class EmployeeValidator {
 	* @param email メールアドレス
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	private static String validateEmail(String email) {
+	public String validateEmail(String email) {
 		if (email != null && !email.isEmpty()) {
-			if (!email.matches("^[A-Za-z0-9][A-Za-z0-9._-]*[A-Za-z0-9]$")) {
+			if (!email.matches("[A-Za-z0-9._@\\-]+")) {
+				return ERROR_INVALID_CHARACTER;
+			} else if (!email.matches("^[A-Za-z0-9][A-Za-z0-9._\\-]*[A-Za-z0-9]@[A-Za-z0-9][A-Za-z0-9.]*[A-Za-z0-9]$")) {
 				return ERROR_EMAIL;
 			} else if (email.length() > 100) {
 				return ERROR_TOO_LONG;
@@ -101,7 +101,7 @@ public class EmployeeValidator {
 	* @param date 日付
 	* @return エラーがある場合はエラーメッセージ、正常な場合はnull
 	*/
-	private static String validateDate(String date) {
+	public String validateDate(String date) {
 		if (date != null && !date.isEmpty()) {
 			try {
 				LocalDate.parse(date, DATE_FORMATTER);
