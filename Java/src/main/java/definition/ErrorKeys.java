@@ -4,6 +4,8 @@ package definition;
  * 社員情報の各パラメータに対するエラー名として使用するキーを定義する
  */
 public class ErrorKeys {
+	
+	public static final String ERROR_VALUES = "errorValues";
 	//各項目に対するエラー
 	public static final String EMPLOYEE_NUM_ERROR = "employeeNumError";
 	public static final String KANJI_NAME_ERROR = "kanjiNameError";

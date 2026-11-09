@@ -28,7 +28,7 @@ class TestEmployeeValidator {
 	private final static String ERROR_EMAIL = "メールアドレスの形式が不正です。";
 	private final static String ERROR_DATE = "日付の形式が不正です。";
 
-	//社員番号
+	
 	/**
 	 * 社員番号のバリデーターへの入力値が正常値だった場合のテスト
 	 */
@@ -75,7 +75,7 @@ class TestEmployeeValidator {
 
 	/**
 	 * 社員番号のバリデーターへの入力値に使用不可文字が含まれていた場合のテスト
-	 * @param value
+	 * @param employeeNum
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -89,18 +89,22 @@ class TestEmployeeValidator {
 			EMOJI,
 			PLATFORM_DEPENDANT_CHARACTER
 	})
-	void testValidateInvalidEmployeeNum(String value) {
+	void testValidateInvalidEmployeeNum(String employeeNum) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_INVALID_CHARACTER;
-		String actual = employeeValidator.validateEmployeeNum(value);
+		String actual = employeeValidator.validateEmployeeNum(employeeNum);
 		assertEquals(expected, actual);
 	}
 
-	//漢字姓
+	
 
 	/**
-	 * 氏名(漢字)のバリデーターへの特殊文字を含む入力値のテスト(姓)
-	 * @param value
+	 * 氏名(漢字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 以下の値を受け取り、全て正常値として処理することを確認する<br>
+	 *・特殊文字を含まない文字列<br>
+	 *・特殊文字を含む文字列
+	 *
+	 * @param kanjiLastName
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -115,15 +119,16 @@ class TestEmployeeValidator {
 			EMOJI,
 			PLATFORM_DEPENDANT_CHARACTER
 	})
-	void testValidateNormalKanjiLastName(String value) {
+	void testValidateNormalKanjiLastName(String kanjiLastName) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = null;
-		String actual = employeeValidator.validateKanjiName(value, "abcd");
+		String actual = employeeValidator.validateKanjiName(kanjiLastName, "abcd");
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * 氏名(漢字)のバリデーターへの入力値が姓のみ空文字だった場合のテスト
+	 * 氏名(漢字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 空文字を異常値として処理することを確認する<br>
 	 */
 	@Test
 	void testValidateEmptyKanjiLastName() {
@@ -134,7 +139,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(漢字)のバリデーターへの入力値が姓のみnullだった場合のテスト
+	 * 氏名(漢字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * nullを異常値として処理することを確認する<br>
 	 */
 	@Test
 	void testValidateNullKanjiLastName() {
@@ -145,7 +151,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(漢字)のテキストボックスの入力上限の境界値テスト(姓)
+	 * 氏名(漢字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 入力上限の境界値を確認する<br>
 	 */
 	@Test
 	void testValidateBoundaryKanjiLastName() {
@@ -156,7 +163,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(漢字)のバリデーターへの入力値が姓のみ上限値を超えた場合のテスト
+	 * 氏名(漢字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 入力上限の境界値を超えた場合を確認する<br>
 	 */
 	@Test
 	void testValidateTooLongKanjiLastName() {
@@ -166,11 +174,14 @@ class TestEmployeeValidator {
 		assertEquals(expected, actual);
 	}
 
-	//漢字名
-
+	
 	/**
-	 * 氏名(漢字)のバリデーターへの特殊文字を含む入力値のテスト(名)
-	 * @param value
+	 * 氏名(漢字)のバリデーターのうち名の項目の入力値のテスト<br>
+	 * 以下の値を受け取り、全て正常値として処理することを確認する<br>
+	 *・特殊文字を含まない文字列<br>
+	 *・特殊文字を含む文字列
+	 *
+	 * @param kanjiFirstName
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -185,15 +196,16 @@ class TestEmployeeValidator {
 			EMOJI,
 			PLATFORM_DEPENDANT_CHARACTER
 	})
-	void testValidateNormalKanjiFirstName(String value) {
+	void testValidateNormalKanjiFirstName(String kanjiFirstName) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = null;
-		String actual = employeeValidator.validateKanjiName("abcd", value);
+		String actual = employeeValidator.validateKanjiName("abcd", kanjiFirstName);
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * 氏名(漢字)のバリデーターへの入力値が姓のみ空文字だった場合のテスト
+	 * 氏名(漢字)のバリデーターのうち名の項目の入力値のテスト<br>
+	 * 空文字を異常値として処理することを確認する<br>
 	 */
 	@Test
 	void testValidateEmptyKanjiFirstName() {
@@ -204,7 +216,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(漢字)のバリデーターへの入力値が姓のみnullだった場合のテスト
+	 * 氏名(漢字)のバリデーターのうち名の項目の入力値のテスト<br>
+	 * nullを異常値として処理することを確認する<br>
 	 */
 	@Test
 	void testValidateNullKanjiFirstName() {
@@ -215,7 +228,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(漢字)のテキストボックスの入力上限の境界値テスト(名)
+	 * 氏名(漢字)のバリデーターのうち名の項目の入力値のテスト<br>
+	 * 入力上限の境界値を確認する<br>
 	 */
 	@Test
 	void testValidateBoundaryKanjiFirstName() {
@@ -226,7 +240,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(漢字)のバリデーターへの入力値が姓のみ上限値を超えた場合のテスト
+	 * 氏名(漢字)のバリデーターのうち名の項目の入力値のテスト<br>
+	 * 入力上限の境界値を超えた場合を確認する<br>
 	 */
 	@Test
 	void testValidateTooLongKanjiFirstName() {
@@ -236,7 +251,7 @@ class TestEmployeeValidator {
 		assertEquals(expected, actual);
 	}
 
-	//ローマ字姓
+	
 
 	/**
 	 * 氏名(ローマ字)のバリデーターへの入力値が両方とも正常値だった場合のテスト
@@ -250,7 +265,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(ローマ字)のバリデーターへの入力値が姓のみ空文字だった場合のテスト
+	 * 氏名(ローマ字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 空文字を異常値として処理することを確認する<br>
 	 */
 	@Test
 	void testValidateEmptyRomanLastName() {
@@ -261,7 +277,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(ローマ字)のバリデーターへの入力値が姓のみnullだった場合のテスト
+	 * 氏名(ローマ字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * nullを異常値として処理することを確認する<br>
 	 */
 	@Test
 	void testValidateNullRomanLastName() {
@@ -272,7 +289,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(ローマ字)のテキストボックスの入力上限の境界値テスト(姓)
+	 * 氏名(ローマ字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 入力上限の境界値を確認する<br>
 	 */
 	@Test
 	void testValidateBoundaryRomanLastName() {
@@ -283,7 +301,8 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(ローマ字)のバリデーターへの入力値が姓のみ入力上限を超えた場合のテスト
+	 * 氏名(ローマ字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 入力上限の境界値を超えた場合を確認する<br>
 	 */
 	@Test
 	void testValidateTooLongRomanLastName() {
@@ -294,8 +313,9 @@ class TestEmployeeValidator {
 	}
 
 	/**
-	 * 氏名(ローマ字)のバリデーターへの入力値に使用不可文字が含まれていた場合のテスト(姓)
-	 * @param value
+	 * 氏名(ローマ字)のバリデーターのうち姓の項目の入力値のテスト<br>
+	 * 入力値に使用不可文字が含まれていた場合を確認する
+	 * @param romanLastName
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -309,14 +329,14 @@ class TestEmployeeValidator {
 			EMOJI,
 			PLATFORM_DEPENDANT_CHARACTER
 	})
-	void testValidateInvalidRomanLastName(String value) {
+	void testValidateInvalidRomanLastName(String romanLastName) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_INVALID_CHARACTER;
-		String actual = employeeValidator.validateRomanName(value, "abcd");
+		String actual = employeeValidator.validateRomanName(romanLastName, "abcd");
 		assertEquals(expected, actual);
 	}
 
-	//ローマ字名
+	
 
 	/**
 	 * 氏名(ローマ字)のバリデーターへの入力値が名のみ空文字だった場合のテスト
@@ -364,7 +384,7 @@ class TestEmployeeValidator {
 
 	/**
 	 * 氏名(ローマ字)のバリデーターへの入力値に使用不可文字が含まれていた場合のテスト(名)
-	 * @param value
+	 * @param romanFirstname
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -378,14 +398,14 @@ class TestEmployeeValidator {
 			EMOJI,
 			PLATFORM_DEPENDANT_CHARACTER
 	})
-	void testValidateInvalidRomanFirstName(String value) {
+	void testValidateInvalidRomanFirstName(String romanFirstname) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_INVALID_CHARACTER;
-		String actual = employeeValidator.validateRomanName("abcd", value);
+		String actual = employeeValidator.validateRomanName("abcd", romanFirstname);
 		assertEquals(expected, actual);
 	}
 
-	//メールアドレス
+	
 
 	/**
 	 * メールアドレスのバリデーターへの入力値が正常値だった場合のテスト
@@ -428,7 +448,7 @@ class TestEmployeeValidator {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = null;
 		String actual = employeeValidator.validateEmail(
-				"aaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeee@123456boundarysample.com");
+				"aaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeee@12345boundary.sample.com");
 		assertEquals(expected, actual);
 	}
 
@@ -440,13 +460,13 @@ class TestEmployeeValidator {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_TOO_LONG;
 		String actual = employeeValidator.validateEmail(
-				"aaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeee@1234567boundarysample.com");
+				"aaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeeeaaaaabbbbbcccccdddddeeeee@123456boundary.sample.com");
 		assertEquals(expected, actual);
 	}
 
 	/**
 	 * メールアドレスのバリデーターへの入力値に使用不可文字が含まれていた場合のテスト
-	 * @param value
+	 * @param email
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -460,10 +480,10 @@ class TestEmployeeValidator {
 			EMOJI,
 			PLATFORM_DEPENDANT_CHARACTER
 	})
-	void testValidateInvalidEmail(String value) {
+	void testValidateInvalidEmail(String email) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_INVALID_CHARACTER;
-		String actual = employeeValidator.validateEmail(value);
+		String actual = employeeValidator.validateEmail(email);
 		assertEquals(expected, actual);
 	}
 
@@ -475,14 +495,14 @@ class TestEmployeeValidator {
 			"-Test.Taro_12-34@sample.com",
 			"Test.Taro_12-34-@sample.com"
 	})
-	void testValidateEmailFormat(String value) {
+	void testValidateEmailFormat(String email) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_EMAIL;
-		String actual = employeeValidator.validateEmail(value);
+		String actual = employeeValidator.validateEmail(email);
 		assertEquals(expected, actual);
 	}
 
-	//日付
+	
 	
 	/**
 	 * 日付のバリデーターへの入力値が正常値だった場合のテスト
@@ -519,7 +539,7 @@ class TestEmployeeValidator {
 
 	/**
 	 * 日付のバリデーターへの入力値が不正な形式だった場合のテスト
-	 * @param value
+	 * @param date
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {
@@ -527,10 +547,10 @@ class TestEmployeeValidator {
 			"2000-001-001",
 			"2000-02-30",
 	})
-	void testValidateInvalidDate(String value) {
+	void testValidateInvalidDate(String date) {
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		String expected = ERROR_DATE;
-		String actual = employeeValidator.validateDate(value);
+		String actual = employeeValidator.validateDate(date);
 		assertEquals(expected, actual);
 	}
 }

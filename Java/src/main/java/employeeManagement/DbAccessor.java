@@ -14,14 +14,14 @@ import definition.EmployeeKeys;
  * DB操作を担当する
  */
 public class DbAccessor {
-	private static final String INSERT_SQL = "INSERT INTO employee (employeeNum,kanjiLastName,kanjiFirstName,romanLastName,romanFirstName,email,birthday,joinDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String UPDATE_SQL = "UPDATE employee SET employeeNum = ?, kanjiLastName = ?, kanjiFirstName = ?, romanLastName = ?, romanFirstName = ?, email = ?, birthday = ?, joinDate = ? WHERE id = ?";
-	private static final String DELETE_SQL = "DELETE FROM employee WHERE id = ?";
-	private static final String SELECT_WHERE_ID_SQL = "SELECT * FROM employee WHERE id = ?";
-	private static final String SELECT_COUNT_EMPLOYEE_NUM_SQL = "SELECT COUNT(*) FROM employee WHERE employeeNum = ?";
-	private static final String SELECT_COUNT_EMAIL_SQL = "SELECT COUNT(*) FROM employee WHERE email = ?";
-	private static final String EMPLOYEE_NUM_AND_DIFFERENT_ID_SELECT_COUNT_SQL = "SELECT COUNT(*) FROM employee WHERE employeeNum = ? AND id <> ?";
-	private static final String EMAIL_AND_DIFFERENT_ID_SELECT_COUNT_SQL = "SELECT COUNT(*) FROM employee WHERE email = ? AND id <> ?";
+	private static final String SQL_INSERT = "INSERT INTO employee (employeeNum,kanjiLastName,kanjiFirstName,romanLastName,romanFirstName,email,birthday,joinDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_UPDATE = "UPDATE employee SET employeeNum = ?, kanjiLastName = ?, kanjiFirstName = ?, romanLastName = ?, romanFirstName = ?, email = ?, birthday = ?, joinDate = ? WHERE id = ?";
+	private static final String SQL_DELETE = "DELETE FROM employee WHERE id = ?";
+	private static final String SQL_SELECT_EMPLOYEE_BY_ID = "SELECT * FROM employee WHERE id = ?";
+	private static final String SQL_COUNT_DUPLICATED_EMPLOYEE_NUM = "SELECT COUNT(*) FROM employee WHERE employeeNum = ?";
+	private static final String SQL_COUNT_DUPLICATED_EMAIL = "SELECT COUNT(*) FROM employee WHERE email = ?";
+	private static final String SQL_COUNT_DUPLICATED_EMPLOYEE_NUM_AND_DIFFERRNT_ID = "SELECT COUNT(*) FROM employee WHERE employeeNum = ? AND id <> ?";
+	private static final String SQL_COUNT_DUPLICATED_EMAIL_AND_DIFFERENT_ID = "SELECT COUNT(*) FROM employee WHERE email = ? AND id <> ?";
 	
 	private final static String ERROR_DUPRICATION = "既に使用されている値です。";
 	
@@ -37,7 +37,7 @@ public class DbAccessor {
 	 * @throws SQLException
 	 */
 	public void insertEmployee(Employee employee) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
+		try (PreparedStatement statement = connection.prepareStatement(SQL_INSERT)) {
 			statement.setString(1, employee.getEmployeeNum());
 			statement.setString(2, employee.getKanjiLastName());
 			statement.setString(3, employee.getKanjiFirstName());
@@ -68,7 +68,7 @@ public class DbAccessor {
 	 * @throws SQLException
 	 */
 	public void updateEmployee(Employee employee) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
+		try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE)) {
 			statement.setString(1, employee.getEmployeeNum());
 			statement.setString(2, employee.getKanjiLastName());
 			statement.setString(3, employee.getKanjiFirstName());
@@ -100,7 +100,7 @@ public class DbAccessor {
 	 * @throws SQLException
 	 */
 	public void deleteEmployee(Employee employee) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
+		try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE)) {
 			statement.setLong(1, employee.getID());
 			statement.executeUpdate();
 		}
@@ -111,8 +111,10 @@ public class DbAccessor {
 	 * @param employee
 	 * @throws SQLException
 	 */
-	public void getEmployeeById(Employee employee) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(SELECT_WHERE_ID_SQL)) {
+	public Employee getEmployeeById(int id) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
+			Employee employee = new Employee();
+			employee.setID(id);
 			statement.setLong(1, employee.getID());
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
@@ -124,50 +126,53 @@ public class DbAccessor {
 				employee.setEmail(resultSet.getString(EmployeeKeys.EMAIL));
 				employee.setBirthday(resultSet.getString(EmployeeKeys.BIRTHDAY));
 				employee.setJoinDate(resultSet.getString(EmployeeKeys.JOIN_DATE));
+				
+				return employee;
 			}
+			return null;
 		}
 	}
 
 	/**
 	 * 社員番号の重複チェック
-	 * @param value
+	 * @param employeeNum
 	 * @return 重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
 	 */
-	public String checkEmployeeNumDuplication(String value) throws SQLException {
-		return checkDuplication(connection, SELECT_COUNT_EMPLOYEE_NUM_SQL, value);
+	public String checkEmployeeNumDuplication(String employeeNum) throws SQLException {
+		return checkDuplication(connection, SQL_COUNT_DUPLICATED_EMPLOYEE_NUM, employeeNum);
 	}
 
 	/**
 	 * 社員番号の重複チェック(ID指定)
-	 * @param value
+	 * @param employeeNum
 	 * @param id
-	 * @return 重複があればエラーメッセージ、なければnull
+	 * @return 同じidのデータを除いて重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
 	 */
-	public String checkEmployeeNumDuplication(String value, int id) throws SQLException {
-		return checkDuplication(connection, EMPLOYEE_NUM_AND_DIFFERENT_ID_SELECT_COUNT_SQL, value, id);
+	public String checkEmployeeNumDuplication(String employeeNum, int id) throws SQLException {
+		return checkDuplication(connection, SQL_COUNT_DUPLICATED_EMPLOYEE_NUM_AND_DIFFERRNT_ID, employeeNum, id);
 	}
 
 	/**
 	 * メールアドレスの重複チェック
-	 * @param value
+	 * @param email
 	 * @return 重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
 	 */
-	public String checkEmailDuplication(String value) throws SQLException {
-		return checkDuplication(connection, SELECT_COUNT_EMAIL_SQL, value);
+	public String checkEmailDuplication(String email) throws SQLException {
+		return checkDuplication(connection, SQL_COUNT_DUPLICATED_EMAIL, email);
 	}
 
 	/**
 	 * メールアドレスの重複チェック(ID指定)
-	 * @param value
+	 * @param email
 	 * @param id
-	 * @return 重複があればエラーメッセージ、なければnull
+	 * @return 同じidのデータを除いて重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
 	 */
-	public String checkEmailDuplication(String value, int id) throws SQLException {
-		return checkDuplication(connection, EMAIL_AND_DIFFERENT_ID_SELECT_COUNT_SQL, value, id);
+	public String checkEmailDuplication(String email, int id) throws SQLException {
+		return checkDuplication(connection, SQL_COUNT_DUPLICATED_EMAIL_AND_DIFFERENT_ID, email, id);
 	}
 
 	/**
@@ -241,13 +246,13 @@ public class DbAccessor {
 	/**
 	 * StringBuilderでSQL文を作成
 	 * @param sql
-	 * @param valueName
+	 * @param paramName
 	 * @param value
 	 * @param parameters
 	 */
-	private void buildSQL(StringBuilder sql, String valueName, String value, List<String> parameters) {
+	private void buildSQL(StringBuilder sql, String paramName, String value, List<String> parameters) {
 		if (value != null && !value.isEmpty()) {
-			sql.append(" AND " + valueName + " LIKE ?");
+			sql.append(" AND " + paramName + " LIKE ?");
 			parameters.add("%" + value + "%");
 		}
 	}

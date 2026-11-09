@@ -31,16 +31,16 @@ public class EmployeeDeleteConfirm extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		EmployeeSession.removeEmployee(request,EmployeeKeys.EMPLOYEE);
-
-		Employee employee = new Employee();
-		employee.setID(Integer.valueOf(request.getParameter(EmployeeKeys.ID)));
 		try (Connection connection = DbConnection.getConnection();) {
 			DbAccessor dbAccessor = new DbAccessor(connection);
-			dbAccessor.getEmployeeById(employee);
+		
+			int id = Integer.valueOf(request.getParameter(EmployeeKeys.ID));
+			Employee employee = dbAccessor.getEmployeeById(id);
+
+			EmployeeSession.setEmployee(request, EmployeeKeys.EMPLOYEE, employee);
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new ServletException(e);
 		}
-		EmployeeSession.setEmployee(request, EmployeeKeys.EMPLOYEE, employee);
 		request.getRequestDispatcher(Paths.DELETE_CONFIRM_PATH).forward(request, response);
 	}
 

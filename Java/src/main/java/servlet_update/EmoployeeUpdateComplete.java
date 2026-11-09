@@ -35,7 +35,7 @@ public class EmoployeeUpdateComplete extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
-		Employee employee = EmployeeSession.getEmployee(request,EmployeeKeys.EMPLOYEE);
+		Employee employee = EmployeeSession.getEmployee(request, EmployeeKeys.EMPLOYEE);
 
 		EmployeeValidator employeeValidator = new EmployeeValidator();
 		ErrorValues errorValues = employeeValidator.validation(employee);
@@ -43,32 +43,21 @@ public class EmoployeeUpdateComplete extends HttpServlet {
 		if (!errorValues.hasError()) {
 			try (Connection connection = DbConnection.getConnection();) {
 				DbAccessor dbAccessor = new DbAccessor(connection);
-				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum(),employee.getID()));
-				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail(),employee.getID()));
+				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum(), employee.getID()));
+				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail(), employee.getID()));
+
+				if (errorValues.hasError()) {
+					request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
+					request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
+					return;
+				}
+
+				dbAccessor.updateEmployee(employee);
+				EmployeeSession.removeEmployee(request, EmployeeKeys.EMPLOYEE);
+				request.getRequestDispatcher(Paths.UPDATE_COMPLETE_PATH).forward(request, response);
 			} catch (SQLException | ClassNotFoundException e) {
 				throw new ServletException(e);
 			}
-		}
-		
-		if (errorValues.hasError()) {
-			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
-			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
-			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
-			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
-			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
-			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
-
-			request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
-			return;
-		}
-		
-		try (Connection connection = DbConnection.getConnection();) {
-			DbAccessor dbAccessor = new DbAccessor(connection);
-			dbAccessor.updateEmployee(employee);
-			EmployeeSession.removeEmployee(request,EmployeeKeys.EMPLOYEE);
-			request.getRequestDispatcher(Paths.UPDATE_COMPLETE_PATH).forward(request, response);
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new ServletException(e);
 		}
 	}
 }

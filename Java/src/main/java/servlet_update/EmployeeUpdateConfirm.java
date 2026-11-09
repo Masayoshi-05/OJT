@@ -61,14 +61,9 @@ public class EmployeeUpdateConfirm extends HttpServlet {
 				throw new ServletException(e);
 			}
 		}
-
+		
 		if (errorValues.hasError()) {
-			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
-			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
-			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
-			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
-			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
-			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
+			request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
 			request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
 			return;
 		}

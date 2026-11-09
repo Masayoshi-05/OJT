@@ -45,8 +45,8 @@ function validateEmail(email) {
 		} else if (!/^[A-Za-z0-9][A-Za-z0-9._\\-]*[A-Za-z0-9]@[A-Za-z0-9][A-Za-z0-9.]*[A-Za-z0-9]$/.test(email)) {
             return ERROR_EMAIL;
         }
-		return "";
     }
+	return "";
 }
 
 function validateDate(date) {

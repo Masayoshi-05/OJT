@@ -12,6 +12,7 @@ import definition.EmployeeKeys;
 import definition.ErrorKeys;
 import definition.Paths;
 import employeeManagement.EmployeeSession;
+import validator.ErrorValues;
 
 /**
  * 登録機能:入力画面のServlet
@@ -24,20 +25,12 @@ public class EmployeeRegisterInput extends HttpServlet {
 		super();
 	}
 	
-	private void clearErrors(HttpServletRequest request) {
-		request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, "");
-		request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, "");
-		request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, "");
-		request.setAttribute(ErrorKeys.EMAIL_ERROR, "");
-		request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, "");
-		request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, "");
-	}
-	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		EmployeeSession.removeEmployee(request,EmployeeKeys.EMPLOYEE);
 		
-		this.clearErrors(request);
+		ErrorValues errorValues = new ErrorValues();
+		request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
 		
 		request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 	}
@@ -46,7 +39,8 @@ public class EmployeeRegisterInput extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
-		this.clearErrors(request);
+		ErrorValues errorValues = new ErrorValues();
+		request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
 		
 		request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 	}

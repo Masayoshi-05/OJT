@@ -44,28 +44,24 @@ public class EmployeeRegisterConfirm extends HttpServlet {
 		employee.setBirthday(request.getParameter(EmployeeKeys.BIRTHDAY));
 		employee.setJoinDate(request.getParameter(EmployeeKeys.JOIN_DATE));
 
-		EmployeeSession.setEmployee(request,EmployeeKeys.EMPLOYEE,employee);
+		EmployeeSession.setEmployee(request, EmployeeKeys.EMPLOYEE, employee);
 
 		EmployeeValidator employeeValidator = new EmployeeValidator();
+
 		ErrorValues errorValues = employeeValidator.validation(employee);
-		
+
 		if (!errorValues.hasError()) {
-			try(Connection connection = DbConnection.getConnection();) {
-			DbAccessor dbAccessor = new DbAccessor(connection);
-			errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
-			errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
+			try (Connection connection = DbConnection.getConnection();) {
+				DbAccessor dbAccessor = new DbAccessor(connection);
+				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
+				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
 			} catch (SQLException | ClassNotFoundException e) {
 				throw new ServletException(e);
 			}
 		}
-		
+
 		if (errorValues.hasError()) {
-			request.setAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR, errorValues.getEmployeeNumError());
-			request.setAttribute(ErrorKeys.KANJI_NAME_ERROR, errorValues.getKanjiNameError());
-			request.setAttribute(ErrorKeys.ROMAN_NAME_ERROR, errorValues.getRomanNameError());
-			request.setAttribute(ErrorKeys.EMAIL_ERROR, errorValues.getEmailError());
-			request.setAttribute(ErrorKeys.BIRTHDAY_ERROR, errorValues.getBirthdayError());
-			request.setAttribute(ErrorKeys.JOIN_DATE_ERROR, errorValues.getJoinDateError());
+			request.setAttribute(ErrorKeys.ERROR_VALUES, errorValues);
 			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;
 		} else {

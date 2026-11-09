@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 	<%@ page import="definition.ErrorKeys" %>
 	<%@ page import="definition.EmployeeKeys" %>
+
 		<!DOCTYPE html>
 		<html lang="ja">
 
@@ -31,7 +32,7 @@
 						<input type="text" id="employeeNum" name="<%= EmployeeKeys.EMPLOYEE_NUM %>"
 							value="${sessionScope.employee.employeeNum}" maxlength="4" placeholder="(例)1234">
 						<div class="errorMessage" id="employeeNumError">
-							<%= request.getAttribute(ErrorKeys.EMPLOYEE_NUM_ERROR) %>
+							${errorValues.employeeNumError}
 						</div>
 					</div>
 				</div>
@@ -48,7 +49,7 @@
 								value="${sessionScope.employee.kanjiFirstName}" maxlength="30" placeholder="(例)太郎">
 						</div>
 						<div class="errorMessage" id="kanjiNameError">
-							<%= request.getAttribute(ErrorKeys.KANJI_NAME_ERROR) %>
+							${errorValues.kanjiNameError}
 						</div>
 					</div>
 				</div>
@@ -65,7 +66,7 @@
 								value="${sessionScope.employee.romanFirstName}" placeholder="(例)taro" maxlength="30">
 						</div>
 						<div class="errorMessage" id="romanNameError">
-							<%= request.getAttribute(ErrorKeys.ROMAN_NAME_ERROR) %>
+							${errorValues.romanNameError}
 						</div>
 					</div>
 				</div>
@@ -77,7 +78,7 @@
 						<input type="text" id="email" name="<%= EmployeeKeys.EMAIL %>" value="${sessionScope.employee.email}"
 							maxlength="100" placeholder="(例)yamada.taro@example.com">
 						<div class="errorMessage" id="emailError">
-							<%= request.getAttribute(ErrorKeys.EMAIL_ERROR) %>
+							${errorValues.emailError}
 						</div>
 					</div>
 				</div>
@@ -89,7 +90,7 @@
 						<input type="date" id="birthday" name="<%= EmployeeKeys.BIRTHDAY %>"
 							value="${sessionScope.employee.birthday}">
 						<div class="errorMessage" id="birthdayError">
-							<%= request.getAttribute(ErrorKeys.BIRTHDAY_ERROR) %>
+							${errorValues.birthdayError}
 						</div>
 					</div>
 				</div>
@@ -101,7 +102,7 @@
 						<input type="date" id="joinDate" name="<%= EmployeeKeys.JOIN_DATE %>"
 							value="${sessionScope.employee.joinDate}">
 						<div class="errorMessage" id="joinDateError">
-							<%= request.getAttribute(ErrorKeys.JOIN_DATE_ERROR) %>
+							${errorValues.joinDateError}
 						</div>
 					</div>
 				</div>
@@ -122,7 +123,7 @@
 
 					const employeeNum = document.getElementById("employeeNum").value;
 					const employeeNumError = validateEmployeeNum(employeeNum);
-					document.getElementById("employeeNumError").textContent; = employeeNumError;
+					document.getElementById("employeeNumError").textContent = employeeNumError;
 					if (employeeNumError !== "") {
 						hasError = true;
 					}
