@@ -4,7 +4,7 @@ package employeeManagement;
 * 社員情報を保持する
 */
 public class Employee {
-	private int iD;
+	private int id;
 	private String employeeNum;
 	private String kanjiFirstName;
 	private String kanjiLastName;
@@ -16,12 +16,12 @@ public class Employee {
 	private String birthday;
 	private String joinDate;
 
-	public int getID() {
-		return iD;
+	public int getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		this.iD = iD;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getEmployeeNum() {

@@ -23,7 +23,7 @@ import employeeManagement.SearchCondition;
 /**
  * 一覧表示画面のServlet
  */
-@WebServlet("/EmployeeList")
+@WebServlet(Paths.EMPLOYEE_LIST_SERVLET_PATH)
 public class EmployeeList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

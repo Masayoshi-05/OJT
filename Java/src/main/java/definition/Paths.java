@@ -7,6 +7,7 @@ package definition;
 public class Paths {
 	//一覧表示画面
 	public static final String EMPLOYEE_LIST_PATH = "/WEB-INF/jsp/EmployeeList.jsp";
+	public static final String EMPLOYEE_LIST_SERVLET_PATH = "/EmployeeList";
 	
 	//登録機能
 	public static final String REGISTER_INPUT_PATH = "/WEB-INF/jsp/EmployeeRegisterInput.jsp";

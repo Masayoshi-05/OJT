@@ -17,8 +17,9 @@ import employeeManagement.DbAccessor;
 import employeeManagement.DbConnection;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
+import errorValues.DuplicationErrors;
+import errorValues.ValidationErrors;
 import validator.EmployeeValidator;
-import validator.ErrorValues;
 
 /**
  * 登録機能:完了画面のServlet
@@ -37,18 +38,24 @@ public class EmployeeRegisterComplete extends HttpServlet {
 
 		Employee employee = EmployeeSession.getEmployee(request, EmployeeKeys.EMPLOYEE);
 
-		EmployeeValidator employeeValidator = new EmployeeValidator();
-		ErrorValues errorValues = employeeValidator.validation(employee);
-
 		try (Connection connection = DbConnection.getConnection();) {
 			DbAccessor dbAccessor = new DbAccessor(connection);
 
-			if (!errorValues.hasError()) {
-				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
-				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
+			EmployeeValidator employeeValidator = new EmployeeValidator();
+			ValidationErrors validationErrors = employeeValidator.validation(employee);
+
+			if (validationErrors.hasError()) {
+				request.setAttribute(ErrorKeys.VALIDATION_ERRORS, validationErrors);
+				request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
+				return;
 			}
-			if (errorValues.hasError()) {
-				request.setAttribute(ErrorKeys.ERROR_VALUES, errorValues);
+			
+			DuplicationErrors duplicationErrors = new DuplicationErrors();
+			duplicationErrors.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
+			duplicationErrors.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
+
+			if (duplicationErrors.hasError()) {
+				request.setAttribute(ErrorKeys.DUPLICATION_ERRORS, duplicationErrors);
 				request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 				return;
 			}

@@ -17,8 +17,10 @@ import employeeManagement.DbAccessor;
 import employeeManagement.DbConnection;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
+import errorValues.DuplicationErrors;
+import errorValues.ErrorValue;
+import errorValues.ValidationErrors;
 import validator.EmployeeValidator;
-import validator.ErrorValues;
 
 /**
  * 更新機能:完了画面のServlet
@@ -38,26 +40,38 @@ public class EmoployeeUpdateComplete extends HttpServlet {
 		Employee employee = EmployeeSession.getEmployee(request, EmployeeKeys.EMPLOYEE);
 
 		EmployeeValidator employeeValidator = new EmployeeValidator();
-		ErrorValues errorValues = employeeValidator.validation(employee);
-
-		if (!errorValues.hasError()) {
-			try (Connection connection = DbConnection.getConnection();) {
-				DbAccessor dbAccessor = new DbAccessor(connection);
-				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum(), employee.getID()));
-				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail(), employee.getID()));
-
-				if (errorValues.hasError()) {
-					request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
-					request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
-					return;
-				}
-
-				dbAccessor.updateEmployee(employee);
-				EmployeeSession.removeEmployee(request, EmployeeKeys.EMPLOYEE);
-				request.getRequestDispatcher(Paths.UPDATE_COMPLETE_PATH).forward(request, response);
-			} catch (SQLException | ClassNotFoundException e) {
-				throw new ServletException(e);
-			}
+		ValidationErrors validationErrors = employeeValidator.validation(employee);
+		if (validationErrors.hasError()) {
+			request.setAttribute(ErrorKeys.VALIDATION_ERRORS, validationErrors);
+			request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
+			return;
 		}
+
+		try (Connection connection = DbConnection.getConnection();) {
+			DbAccessor dbAccessor = new DbAccessor(connection);
+			DuplicationErrors duplicationErrors = new DuplicationErrors();
+			duplicationErrors.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum(), employee.getId()));
+			duplicationErrors.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail(), employee.getId()));
+
+			if (duplicationErrors.hasError()) {
+				request.setAttribute(ErrorKeys.DUPLICATION_ERRORS, duplicationErrors);
+				request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
+				return;
+			}
+
+			if (dbAccessor.getEmployeeById(employee.getId()) == null) {
+				ErrorValue generalError = new ErrorValue();
+				generalError.setErrorValue("対象の社員情報が見つかりませんでした。");
+				request.setAttribute(ErrorKeys.GENERAL_ERROR, generalError);
+				request.getRequestDispatcher(Paths.EMPLOYEE_LIST_SERVLET_PATH).forward(request, response);
+				return;
+			}
+
+			dbAccessor.updateEmployee(employee);
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new ServletException(e);
+		}
+		EmployeeSession.removeEmployee(request, EmployeeKeys.EMPLOYEE);
+		request.getRequestDispatcher(Paths.UPDATE_COMPLETE_PATH).forward(request, response);
 	}
 }

@@ -17,8 +17,9 @@ import employeeManagement.DbAccessor;
 import employeeManagement.DbConnection;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
+import errorValues.DuplicationErrors;
+import errorValues.ValidationErrors;
 import validator.EmployeeValidator;
-import validator.ErrorValues;
 
 /**
  * 登録機能:確認画面のServlet
@@ -47,26 +48,31 @@ public class EmployeeRegisterConfirm extends HttpServlet {
 		EmployeeSession.setEmployee(request, EmployeeKeys.EMPLOYEE, employee);
 
 		EmployeeValidator employeeValidator = new EmployeeValidator();
-
-		ErrorValues errorValues = employeeValidator.validation(employee);
-
-		if (!errorValues.hasError()) {
-			try (Connection connection = DbConnection.getConnection();) {
-				DbAccessor dbAccessor = new DbAccessor(connection);
-				errorValues.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
-				errorValues.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
-			} catch (SQLException | ClassNotFoundException e) {
-				throw new ServletException(e);
-			}
-		}
-
-		if (errorValues.hasError()) {
-			request.setAttribute(ErrorKeys.ERROR_VALUES, errorValues);
+		ValidationErrors validationErrors = employeeValidator.validation(employee);
+		if (validationErrors.hasError()) {
+			request.setAttribute(ErrorKeys.VALIDATION_ERRORS, validationErrors);
 			request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 			return;
-		} else {
-			request.getRequestDispatcher(Paths.REGISTER_CONFIRM_PATH).forward(request, response);
 		}
+		
+		try (Connection connection = DbConnection.getConnection();) {
+			DbAccessor dbAccessor = new DbAccessor(connection);
+
+			DuplicationErrors duplicationErrors = new DuplicationErrors();
+			duplicationErrors.setEmployeeNumError(dbAccessor.checkEmployeeNumDuplication(employee.getEmployeeNum()));
+			duplicationErrors.setEmailError(dbAccessor.checkEmailDuplication(employee.getEmail()));
+
+			if (duplicationErrors.hasError()) {
+				request.setAttribute(ErrorKeys.DUPLICATION_ERRORS, duplicationErrors);
+				request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
+				return;
+			}
+
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new ServletException(e);
+		}
+
+		request.getRequestDispatcher(Paths.REGISTER_CONFIRM_PATH).forward(request, response);
 	}
 
 }

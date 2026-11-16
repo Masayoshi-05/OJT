@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 import employeeManagement.Employee;
+import errorValues.ValidationErrors;
 
 /**
 * 社員情報の各入力値に対するバリデーションチェック
@@ -14,21 +15,22 @@ public class EmployeeValidator {
 	private final static String ERROR_REQUIRED = "入力必須の項目です。";
 	private final static String ERROR_TOO_LONG = "登録可能な文字数を超過しています。";
 	private final static String ERROR_INVALID_CHARACTER = "使用できない文字が含まれています。";
-	private final static String ERROR_EMAIL = "メールアドレスの形式が不正です。";
-	private final static String ERROR_DATE = "日付の形式が不正です。";
+	private final static String ERROR_EMAIL_FORMAT = "メールアドレスの形式が不正です。";
+	private final static String ERROR_DATE_FORMAT = "日付の形式が不正です。";
 	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd")
 			.withResolverStyle(ResolverStyle.STRICT);
 
-	public ErrorValues validation(Employee employee) {
-		ErrorValues errorValues = new ErrorValues();
-		errorValues.setEmployeeNumError(validateEmployeeNum(employee.getEmployeeNum()));
-		errorValues.setKanjiNameError(validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
-		errorValues.setRomanNameError(validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
-		errorValues.setEmailError(validateEmail(employee.getEmail()));
-		errorValues.setBirthdayError(validateDate(employee.getBirthday()));
-		errorValues.setJoinDateError(validateDate(employee.getJoinDate()));
-		return errorValues;
+	public ValidationErrors validation(Employee employee) {
+		ValidationErrors validationErrors = new ValidationErrors();
+		validationErrors.setEmployeeNumError(validateEmployeeNum(employee.getEmployeeNum()));
+		validationErrors.setKanjiNameError(validateKanjiName(employee.getKanjiLastName(), employee.getKanjiFirstName()));
+		validationErrors.setRomanNameError(validateRomanName(employee.getRomanLastName(), employee.getRomanFirstName()));
+		validationErrors.setEmailError(validateEmail(employee.getEmail()));
+		validationErrors.setBirthdayError(validateDate(employee.getBirthday()));
+		validationErrors.setJoinDateError(validateDate(employee.getJoinDate()));
+		return validationErrors;
 	}
+
 
 	/**
 	* 社員番号のバリデーションチェック
@@ -88,7 +90,7 @@ public class EmployeeValidator {
 			if (!email.matches("[A-Za-z0-9._@\\-]+")) {
 				return ERROR_INVALID_CHARACTER;
 			} else if (!email.matches("^[A-Za-z0-9][A-Za-z0-9._\\-]*[A-Za-z0-9]@[A-Za-z0-9][A-Za-z0-9.]*[A-Za-z0-9]$")) {
-				return ERROR_EMAIL;
+				return ERROR_EMAIL_FORMAT;
 			} else if (email.length() > 100) {
 				return ERROR_TOO_LONG;
 			}
@@ -106,7 +108,7 @@ public class EmployeeValidator {
 			try {
 				LocalDate.parse(date, DATE_FORMATTER);
 			} catch (DateTimeParseException e) {
-				return ERROR_DATE;
+				return ERROR_DATE_FORMAT;
 			}
 		}
 		return null;

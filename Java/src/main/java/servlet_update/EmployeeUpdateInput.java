@@ -17,7 +17,8 @@ import employeeManagement.DbAccessor;
 import employeeManagement.DbConnection;
 import employeeManagement.Employee;
 import employeeManagement.EmployeeSession;
-import validator.ErrorValues;
+import errorValues.ErrorValue;
+import errorValues.ValidationErrors;
 
 /**
  * 更新機能:入力画面のServlet
@@ -32,34 +33,36 @@ public class EmployeeUpdateInput extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		ErrorValues errorValues = new ErrorValues();
-		request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
-		
+		ValidationErrors validationErrors = new ValidationErrors();
+		request.setAttribute(ErrorKeys.VALIDATION_ERRORS, validationErrors);
+
 		request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
 		EmployeeSession.removeEmployee(request, EmployeeKeys.EMPLOYEE);
-		
-		ErrorValues errorValues = new ErrorValues();
-		request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
-
-		int id = Integer.valueOf(request.getParameter(EmployeeKeys.ID));
+		ValidationErrors validationErrors = new ValidationErrors();
+		request.setAttribute(ErrorKeys.VALIDATION_ERRORS, validationErrors);
 
 		try (Connection connection = DbConnection.getConnection();) {
 			DbAccessor dbAccessor = new DbAccessor(connection);
+			
+			int id = Integer.valueOf(request.getParameter(EmployeeKeys.ID));
 			Employee employee = dbAccessor.getEmployeeById(id);
-			if(employee == null) {
-				request.getRequestDispatcher(Paths.ERROR_PATH).forward(request, response);
+			if (employee == null) {
+				ErrorValue generalError = new ErrorValue();
+				generalError.setErrorValue("対象の社員情報が見つかりませんでした。");
+				request.setAttribute(ErrorKeys.GENERAL_ERROR, generalError);
+				request.getRequestDispatcher(Paths.EMPLOYEE_LIST_SERVLET_PATH).forward(request, response);
 				return;
 			}
 			EmployeeSession.setEmployee(request, EmployeeKeys.EMPLOYEE, employee);
+			request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new ServletException(e);
 		}
-		request.getRequestDispatcher(Paths.UPDATE_INPUT_PATH).forward(request, response);
 	}
 }

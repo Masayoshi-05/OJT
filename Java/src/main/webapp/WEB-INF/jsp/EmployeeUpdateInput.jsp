@@ -32,7 +32,8 @@
 						<input type="text" id="employeeNum" name="<%= EmployeeKeys.EMPLOYEE_NUM %>"
 							value="${sessionScope.employee.employeeNum}" maxlength="4" placeholder="(例)1234">
 						<div class="errorMessage" id="employeeNumError">
-							${errorValues.employeeNumError}
+							${validationErrors.employeeNumError}
+							${duplicationErrors.employeeNumError}
 						</div>
 					</div>
 				</div>
@@ -49,7 +50,7 @@
 								value="${sessionScope.employee.kanjiFirstName}" maxlength="30" placeholder="(例)太郎">
 						</div>
 						<div class="errorMessage" id="kanjiNameError">
-							${errorValues.kanjiNameError}
+							${validationErrors.kanjiNameError}
 						</div>
 					</div>
 				</div>
@@ -66,7 +67,7 @@
 								value="${sessionScope.employee.romanFirstName}" placeholder="(例)taro" maxlength="30">
 						</div>
 						<div class="errorMessage" id="romanNameError">
-							${errorValues.romanNameError}
+							${validationErrors.romanNameError}
 						</div>
 					</div>
 				</div>
@@ -78,7 +79,8 @@
 						<input type="text" id="email" name="<%= EmployeeKeys.EMAIL %>" value="${sessionScope.employee.email}"
 							maxlength="100" placeholder="(例)yamada.taro@example.com">
 						<div class="errorMessage" id="emailError">
-							${errorValues.emailError}
+							${validationErrors.emailError}
+							${duplicationErrors.emailError}
 						</div>
 					</div>
 				</div>
@@ -90,7 +92,7 @@
 						<input type="date" id="birthday" name="<%= EmployeeKeys.BIRTHDAY %>"
 							value="${sessionScope.employee.birthday}">
 						<div class="errorMessage" id="birthdayError">
-							${errorValues.birthdayError}
+							${validationErrors.birthdayError}
 						</div>
 					</div>
 				</div>
@@ -102,7 +104,7 @@
 						<input type="date" id="joinDate" name="<%= EmployeeKeys.JOIN_DATE %>"
 							value="${sessionScope.employee.joinDate}">
 						<div class="errorMessage" id="joinDateError">
-							${errorValues.joinDateError}
+							${validationErrors.joinDateError}
 						</div>
 					</div>
 				</div>

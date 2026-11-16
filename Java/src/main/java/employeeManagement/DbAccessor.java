@@ -22,9 +22,9 @@ public class DbAccessor {
 	private static final String SQL_COUNT_DUPLICATED_EMAIL = "SELECT COUNT(*) FROM employee WHERE email = ?";
 	private static final String SQL_COUNT_DUPLICATED_EMPLOYEE_NUM_AND_DIFFERRNT_ID = "SELECT COUNT(*) FROM employee WHERE employeeNum = ? AND id <> ?";
 	private static final String SQL_COUNT_DUPLICATED_EMAIL_AND_DIFFERENT_ID = "SELECT COUNT(*) FROM employee WHERE email = ? AND id <> ?";
-	
+
 	private final static String ERROR_DUPRICATION = "既に使用されている値です。";
-	
+
 	private Connection connection;
 
 	public DbAccessor(Connection connection) {
@@ -89,7 +89,7 @@ public class DbAccessor {
 			} else {
 				statement.setDate(8, java.sql.Date.valueOf(employee.getJoinDate()));
 			}
-			statement.setLong(9, employee.getID());
+			statement.setLong(9, employee.getId());
 			statement.executeUpdate();
 		}
 	}
@@ -101,23 +101,23 @@ public class DbAccessor {
 	 */
 	public void deleteEmployee(Employee employee) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE)) {
-			statement.setLong(1, employee.getID());
+			statement.setLong(1, employee.getId());
 			statement.executeUpdate();
 		}
 	}
 
 	/**
 	 * IDから社員情報を検索・取得
-	 * @param employee
+	 * @param id
 	 * @throws SQLException
 	 */
 	public Employee getEmployeeById(int id) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
-			Employee employee = new Employee();
-			employee.setID(id);
-			statement.setLong(1, employee.getID());
+			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
+				Employee employee = new Employee();
+				employee.setId(id);
 				employee.setEmployeeNum(resultSet.getString(EmployeeKeys.EMPLOYEE_NUM));
 				employee.setKanjiLastName(resultSet.getString(EmployeeKeys.KANJI_LAST_NAME));
 				employee.setKanjiFirstName(resultSet.getString(EmployeeKeys.KANJI_FIRST_NAME));
@@ -126,7 +126,7 @@ public class DbAccessor {
 				employee.setEmail(resultSet.getString(EmployeeKeys.EMAIL));
 				employee.setBirthday(resultSet.getString(EmployeeKeys.BIRTHDAY));
 				employee.setJoinDate(resultSet.getString(EmployeeKeys.JOIN_DATE));
-				
+
 				return employee;
 			}
 			return null;
@@ -179,7 +179,8 @@ public class DbAccessor {
 	 * 重複チェック処理
 	 * @param connection
 	 * @param sql
-	 * @param value
+	 * @param valueには重複チェック対象の値が入る
+	 * @querly 重複チェック対象と同値の行をカウントする
 	 * @return 重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
 	 */
@@ -200,7 +201,8 @@ public class DbAccessor {
 	 * IDを指定し、そのIDの社員は省いて重複チェック処理
 	 * @param connection
 	 * @param sql
-	 * @param value
+	 * @param valueには重複チェック対象の値が入る
+	 * @querly 
 	 * @param id
 	 * @return 重複があればエラーメッセージ、なければnull
 	 * @throws SQLException
@@ -218,7 +220,7 @@ public class DbAccessor {
 			}
 		}
 	}
-	
+
 	/**
 	 * DBから得た社員情報をリスト化
 	 * @param resultSet
@@ -229,7 +231,7 @@ public class DbAccessor {
 		List<Employee> employees = new ArrayList<>();
 		while (resultSet.next()) {
 			Employee employee = new Employee();
-			employee.setID(resultSet.getInt(EmployeeKeys.ID));
+			employee.setId(resultSet.getInt(EmployeeKeys.ID));
 			employee.setEmployeeNum(resultSet.getString(EmployeeKeys.EMPLOYEE_NUM));
 			employee.setKanjiLastName(resultSet.getString(EmployeeKeys.KANJI_LAST_NAME));
 			employee.setKanjiFirstName(resultSet.getString(EmployeeKeys.KANJI_FIRST_NAME));
@@ -247,7 +249,7 @@ public class DbAccessor {
 	 * StringBuilderでSQL文を作成
 	 * @param sql
 	 * @param paramName
-	 * @param value
+	 * @param valueには条件として使用する項目の値が入る
 	 * @param parameters
 	 */
 	private void buildSQL(StringBuilder sql, String paramName, String value, List<String> parameters) {
@@ -257,7 +259,7 @@ public class DbAccessor {
 		}
 	}
 
-	private String buildSearchWhere(Employee employee,List<String> parameters) {
+	private String buildSearchWhere(Employee employee, List<String> parameters) {
 		StringBuilder where = new StringBuilder(" WHERE 1 = 1");
 		buildSQL(where, EmployeeKeys.EMPLOYEE_NUM, employee.getEmployeeNum(), parameters);
 		buildSQL(where,
@@ -279,7 +281,7 @@ public class DbAccessor {
 		buildSQL(where, EmployeeKeys.JOIN_DATE, employee.getJoinDate(), parameters);
 		return where.toString();
 	}
-	
+
 	/**
 	 * 社員情報検索
 	 * @param employee
@@ -288,11 +290,11 @@ public class DbAccessor {
 	 * @return 検索条件に基づいたページサイズ分の件数の社員情報リスト
 	 * @throws SQLException
 	 */
-	public List<Employee> searchEmployees(Employee employee, int page,int pageSize) throws SQLException {
+	public List<Employee> searchEmployees(Employee employee, int page, int pageSize) throws SQLException {
 		List<String> parameters = new ArrayList<>();
 
-		String searchSql = "SELECT * FROM employee" +  buildSearchWhere(employee, parameters) + " LIMIT ? OFFSET ?";
-		
+		String searchSql = "SELECT * FROM employee" + buildSearchWhere(employee, parameters) + " LIMIT ? OFFSET ?";
+
 		try (PreparedStatement statement = connection.prepareStatement(searchSql)) {
 			int index = 1;
 			for (String parameter : parameters) {
@@ -304,7 +306,7 @@ public class DbAccessor {
 			return makeEmployeeLists(resultSet);
 		}
 	}
-	
+
 	/**
 	 * DBから得た社員情報数をカウント
 	 * @param employee
@@ -313,7 +315,7 @@ public class DbAccessor {
 	 */
 	public int countSearchedEmployees(Employee employee) throws SQLException {
 		List<String> parameters = new ArrayList<>();
-		String countSql = "SELECT COUNT(*) FROM employee" +  buildSearchWhere(employee, parameters);
+		String countSql = "SELECT COUNT(*) FROM employee" + buildSearchWhere(employee, parameters);
 
 		try (PreparedStatement statement = connection.prepareStatement(countSql)) {
 			int index = 1;

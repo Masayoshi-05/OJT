@@ -12,7 +12,7 @@ import definition.EmployeeKeys;
 import definition.ErrorKeys;
 import definition.Paths;
 import employeeManagement.EmployeeSession;
-import validator.ErrorValues;
+import errorValues.ValidationErrors;
 
 /**
  * 登録機能:入力画面のServlet
@@ -29,8 +29,8 @@ public class EmployeeRegisterInput extends HttpServlet {
 			throws ServletException, IOException {
 		EmployeeSession.removeEmployee(request,EmployeeKeys.EMPLOYEE);
 		
-		ErrorValues errorValues = new ErrorValues();
-		request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
+		ValidationErrors validationErrors = new ValidationErrors();
+		request.setAttribute(ErrorKeys.VALIDATION_ERRORS,validationErrors);
 		
 		request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 	}
@@ -39,8 +39,8 @@ public class EmployeeRegisterInput extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
-		ErrorValues errorValues = new ErrorValues();
-		request.setAttribute(ErrorKeys.ERROR_VALUES,errorValues);
+		ValidationErrors validationErrors = new ValidationErrors();
+		request.setAttribute(ErrorKeys.VALIDATION_ERRORS,validationErrors);
 		
 		request.getRequestDispatcher(Paths.REGISTER_INPUT_PATH).forward(request, response);
 	}

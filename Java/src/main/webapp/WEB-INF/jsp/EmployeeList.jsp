@@ -27,6 +27,9 @@
 	</head>
 
 	<body>
+		<div class="errorMessage" id="employeeList">
+			${generalError.errorValue}
+		</div>
 		<div class="pageHeader">
 			<h2>社員情報一覧</h2>
 		</div>
@@ -264,13 +267,13 @@
 					</td>
 					<td>
 						<form action="EmployeeUpdateInput" method="post">
-							<input type="hidden" name="<%= EmployeeKeys.ID %>" value="<%= employee.getID() %>">
+							<input type="hidden" name="<%= EmployeeKeys.ID %>" value="<%= employee.getId() %>">
 							<input type="submit" value="更新">
 						</form>
 					</td>
 					<td>
 						<form action="EmployeeDeleteConfirm" method="post">
-							<input type="hidden" name="<%= EmployeeKeys.ID %>" value="<%= employee.getID() %>">
+							<input type="hidden" name="<%= EmployeeKeys.ID %>" value="<%= employee.getId() %>">
 							<input type="submit" value="削除">
 						</form>
 					</td>
