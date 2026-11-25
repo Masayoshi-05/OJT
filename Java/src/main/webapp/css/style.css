@@ -140,7 +140,7 @@
 	text-align: center;
 }
 
-.displayTotalAndCurrentPage {
+.pageInfo {
 	width: 725px;
 	text-align: center;
 	font-weight: bold;
@@ -157,9 +157,14 @@
 	display: flex;
 }
 
-.pageSkip {
+.pageJump {
 	gap: 30px;
 	display: flex;
+}
+
+.pagePlaceholder{
+	display:inline-block;
+	width:28px;
 }
 
 .employeeTable{

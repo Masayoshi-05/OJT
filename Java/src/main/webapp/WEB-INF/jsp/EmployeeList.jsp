@@ -1,19 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="definition.EmployeeKeys" %>
-<%@ page import="definition.PageKeys" %>
+<%@ page import="definition.key.EmployeeKeys" %>
+<%@ page import="definition.path.Paths" %>
 <%@ page import="java.util.List" %>
-<%@ page import="employeeManagement.Employee" %>
-<%@ page import="employeeManagement.SearchCondition" %>
+<%@ page import="data.employee.Employee" %>
+<%@ page import="data.employee.IsCheckedEmployee" %>
 
-<%
-	int totalSearchedEmployees = (Integer)request.getAttribute(EmployeeKeys.TOTAL_SEARCHED_EMPLOYEES);
-	int currentPage = (Integer)request.getAttribute(PageKeys.CURRENT_PAGE);
-	int totalPages = (Integer)request.getAttribute(PageKeys.TOTAL_PAGES);
-	int pageSize = (Integer)request.getAttribute(PageKeys.PAGE_SIZE);
-%>
 <% List<Employee> employees = (List<Employee>)request.getAttribute(EmployeeKeys.EMPLOYEES); %>
-<% SearchCondition condition = (SearchCondition)session.getAttribute(SearchCondition.IS_CHECKED_EMPLOYEE);
-	if(condition == null){condition = new SearchCondition();}
+<% IsCheckedEmployee isCheckedEmployee = (IsCheckedEmployee)request.getAttribute(EmployeeKeys.IS_CHECKED_EMPLOYEE);
+	if(isCheckedEmployee == null){
+		isCheckedEmployee = new IsCheckedEmployee();
+	}
 %>
 	<!DOCTYPE html>
 	<html lang="ja">
@@ -34,7 +30,7 @@
 			<h2>社員情報一覧</h2>
 		</div>
 		<div class="singleButtonArea">
-			<form id="employeeForm" action="<%= request.getContextPath() %>/EmployeeRegisterInput"
+			<form id="employeeForm" action="<%= request.getContextPath() %><%= Paths.REGISTER_INPUT_SERVLET_PATH %>"
 				method="get">
 				<button type="submit">社員情報の新規登録</button>
 			</form>
@@ -45,77 +41,77 @@
 				<table>
 					<tr>
 						<td>
-							<input type="checkbox" name="<%= EmployeeKeys.SEARCH_EMPLOYEE_NUM %>"
-							<%= condition.isCheckedEmployeeNum() ? "checked" : "" %>>
+							<input type="checkbox" name="<%= EmployeeKeys.IS_CHECKED_EMPLOYEE_NUM %>"
+							<%= isCheckedEmployee.isCheckedEmployeeNum() ? "checked" : "" %>>
 							社員番号
 						</td>
 						<td>
 							<input type="text" name="<%= EmployeeKeys.EMPLOYEE_NUM %>" placeholder="Search"
-							value="${sessionScope.searchEmployee.employeeNum}">
+							value="${conditionEmployee.employeeNum}">
 						</td>
 					</tr>
 
 					<tr>
 						<td>
-							<input type="checkbox" name="<%= EmployeeKeys.SEARCH_KANJI_NAME %>" 
-							<%= condition.isCheckedKanjiName() ? "checked" : "" %>>
+							<input type="checkbox" name="<%= EmployeeKeys.IS_CHECKED_KANJI_NAME %>" 
+							<%= isCheckedEmployee.isCheckedKanjiName() ? "checked" : "" %>>
 							氏名(漢字)
 						</td>
 
 						<td>
 							<input type="text" name="<%= EmployeeKeys.KANJI_NAME %>" placeholder="Search"
-							value="${sessionScope.searchEmployee.kanjiName}">
+							value="${conditionEmployee.kanjiName}">
 						</td>
 					</tr>
 
 					<tr>
 						<td>
-							<input type="checkbox" name="<%= EmployeeKeys.SEARCH_ROMAN_NAME %>" 
-							<%= condition.isCheckedRomanName() ? "checked" : "" %>>
+							<input type="checkbox" name="<%= EmployeeKeys.IS_CHECKED_ROMAN_NAME %>" 
+							<%= isCheckedEmployee.isCheckedRomanName() ? "checked" : "" %>>
 							氏名(ローマ字)
 						</td>
 
 						<td>
 							<input type="text" name="<%= EmployeeKeys.ROMAN_NAME %>" placeholder="Search"
-							value="${sessionScope.searchEmployee.romanName}">
+							value="${conditionEmployee.romanName}">
 						</td>
 					</tr>
 
 					<tr>
 						<td>
-							<input type="checkbox" name="<%= EmployeeKeys.SEARCH_EMAIL %>" 
-							<%= condition.isCheckedEmail() ? "checked" : "" %>>
+							<input type="checkbox" name="<%= EmployeeKeys.IS_CHECKED_EMAIL %>" 
+							<%= isCheckedEmployee.isCheckedEmail() ? "checked" : "" %>>
 							メールアドレス
 						</td>
 						<td>
 							<input type="text" name="<%= EmployeeKeys.EMAIL %>" placeholder="Search"
-							value="${sessionScope.searchEmployee.email}">
+							value="${conditionEmployee.email}">
 						</td>
 					</tr>
 
 					<tr>
 						<td>
-							<input type="checkbox" name="<%= EmployeeKeys.SEARCH_BIRTHDAY %>" 
-							<%= condition.isCheckedBirthday() ? "checked" : "" %>>
+							<input type="checkbox" name="<%= EmployeeKeys.IS_CHECKED_BIRTHDAY %>" 
+							<%= isCheckedEmployee.isCheckedBirthday() ? "checked" : "" %>>
 							生年月日
 						</td>
 
 						<td>
 							<input type="text" name="<%= EmployeeKeys.BIRTHDAY %>" placeholder="Search"
-							value="${sessionScope.searchEmployee.birthday}">
+							value="${conditionEmployee.birthday}">
 						</td>
 					</tr>
 
 					<tr>
 						<td>
-							<input type="checkbox" name="<%= EmployeeKeys.SEARCH_JOIN_DATE %>" 
-							<%= condition.isCheckedJoinDate() ? "checked" : "" %>>
+							<input type="checkbox" name="<%= EmployeeKeys.IS_CHECKED_JOIN_DATE %>" 
+							<%= isCheckedEmployee.isCheckedJoinDate() ? "checked" : "" %>>
 							入社年月日
 						</td>
 
 						<td>
 							<input type="text" name="<%= EmployeeKeys.JOIN_DATE %>" placeholder="Search"
-							value="${sessionScope.searchEmployee.joinDate}">
+							value="${conditionEmployee.joinDate}">
 						</td>
 					</tr>
 				</table>
@@ -127,113 +123,14 @@
 			</form>
 		</details>
 		
-		<div class = displayTotalAndCurrentPage>
-			<% if(currentPage * pageSize > totalSearchedEmployees){ %>
-				<%= (currentPage - 1) * pageSize + 1 %>～<%= totalSearchedEmployees %>件/<%= totalSearchedEmployees %>件中
-			<% }else{ %>
-				<%= (currentPage - 1) * pageSize + 1 %>～<%= currentPage * pageSize %>件/<%= totalSearchedEmployees %>件中
-			<% } %>
+		<div class="pageInfo" id="pageInfoTop">
 		</div>
 		
-		<div class="pagingButtons">
-			<span class="pageSkip">
-				<% if(currentPage > 1){ %>
-					<a href="EmployeeList?page=<%= 1 %>">
-						<<
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-				<% if(currentPage > 1){ %>
-					<a href="EmployeeList?page=<%= currentPage - 1 %>">
-						<
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-			</span>
-
-			<span class = "pageNums">
-				<% if(totalPages >= 6 && currentPage >= 4){ %>
-					<span>
-						...
-					</span>
-				<% } %>
-				<% if(totalPages - currentPage == 0){ %>
-					<% if(totalPages == 4){ %>
-						<a href="EmployeeList?page=<%= currentPage - 3 %>">
-							<%= currentPage - 3 %>
-						</a>
-					<% }else if(totalPages >= 5){ %>
-						<a href="EmployeeList?page=<%= currentPage - 4 %>">
-							<%= currentPage - 4 %>
-						</a>
-						<a href="EmployeeList?page=<%= currentPage - 3 %>">
-							<%= currentPage - 3 %>
-						</a>
-					<% } %>
-				<% } %>
-				<% if(totalPages - currentPage == 1 && totalPages >= 5){ %>
-					<a href="EmployeeList?page=<%= currentPage - 3 %>">
-						<%= currentPage - 3 %>
-					</a>
-				<% } %>
-				<% for(int i = currentPage - 2 ; i <= currentPage + 2 ; i++){ %>
-					<% if(i == currentPage){ %>
-						<strong><%= i %></strong>
-					<% }else if(i > 0 && i <= totalPages){ %>
-						<a href="EmployeeList?page=<%= i %>">
-							<%= i %>
-						</a>
-					<% } %>
-				<% } %>
-				<% if(currentPage == 1){ %>
-					<% if(totalPages == 4){ %>
-						<a href="EmployeeList?page=4">
-							4
-						</a>
-					<% }else if(totalPages >= 5){ %>
-						<a href="EmployeeList?page=4">
-							4
-						</a>
-						<a href="EmployeeList?page=5">
-							5
-						</a>
-					<% } %>
-				<% } %>
-				<% if(currentPage == 2 && totalPages >= 5){ %>
-					<a href="EmployeeList?page=5">
-						5
-					</a>
-				<% } %>
-				<% if(totalPages >= 6 && totalPages - currentPage >= 3){ %>
-					<span>
-						...
-					</span>
-				<% } %>
-			</span>
+		<div class="pagingButtons" id="pagingButtonsTop">
+		</div>
+		
+		<table class="employeeTable" border="1">
 			
-			<span class = "pageSkip">
-				<% if(currentPage < totalPages){ %>
-					<a href="EmployeeList?page=<%= currentPage + 1 %>">
-				    	>
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-
-				<% if(currentPage < totalPages){ %>
-					<a href="EmployeeList?page=<%= totalPages %>">
-						>>
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-			</span>
-		</div>
-		
-		<table class = "employeeTable" border="1">
-
 			<tr>
 				<th>社員番号</th>
 				<th>氏名(漢字)</th>
@@ -246,24 +143,24 @@
 			</tr>
 
 			<% for(Employee employee : employees){ %>
-				<tr>
+				<tr class="employeeRow" display="none">
 					<td>
 						<%= employee.getEmployeeNum() %>
 					</td>
 					<td>
-						<%= employee.getKanjiLastName() %>　<%= employee.getKanjiFirstName() %>
+						<%= employee.getKanjiLastName() %> <%= employee.getKanjiFirstName() %>
 					</td>
 					<td>
-						<%= employee.getRomanLastName() %>　<%= employee.getRomanFirstName() %>
+						<%= employee.getRomanLastName() %> <%= employee.getRomanFirstName() %>
 					</td>
 					<td>
-						<%= employee.getEmail() %>
+						<%= employee.getEmail() == null || employee.getEmail().isEmpty() ? "未登録" : employee.getEmail() %>
 					</td>
 					<td>
-						<%= employee.getBirthday() %>
+						<%= employee.getBirthday() == null || employee.getBirthday().isEmpty() ? "未登録" : employee.getBirthday() %>
 					</td>
 					<td>
-						<%= employee.getJoinDate() %>
+						<%= employee.getJoinDate() == null || employee.getJoinDate().isEmpty() ? "未登録" : employee.getJoinDate() %>
 					</td>
 					<td>
 						<form action="EmployeeUpdateInput" method="post">
@@ -280,130 +177,163 @@
 				</tr>
 
 			<% } %>
-
 		</table>
 
-		<div class="pagingButtons">
-			<span class="pageSkip">
-				<% if(currentPage > 1){ %>
-					<a href="EmployeeList?page=<%= 1 %>">
-						<<
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-				<% if(currentPage > 1){ %>
-					<a href="EmployeeList?page=<%= currentPage - 1 %>">
-						<
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-			</span>
-			
-			<span class = "pageNums">
-				<% if(totalPages >= 6 && currentPage >= 4){ %>
-					<span>
-						...
-					</span>
-				<% } %>
-				<% if(totalPages - currentPage == 0){ %>
-					<% if(totalPages == 4){ %>
-						<a href="EmployeeList?page=<%= currentPage - 3 %>">
-							<%= currentPage - 3 %>
-						</a>
-					<% }else if(totalPages >= 5){ %>
-						<a href="EmployeeList?page=<%= currentPage - 4 %>">
-							<%= currentPage - 4 %>
-						</a>
-						<a href="EmployeeList?page=<%= currentPage - 3 %>">
-							<%= currentPage - 3 %>
-						</a>
-					<% } %>
-				<% } %>
-				<% if(totalPages - currentPage == 1 && totalPages >= 5){ %>
-					<a href="EmployeeList?page=<%= currentPage - 3 %>">
-						<%= currentPage - 3 %>
-					</a>
-				<% } %>
-				<% for(int i = currentPage - 2 ; i <= currentPage + 2 ; i++){ %>
-					<% if(i == currentPage){ %>
-						<strong><%= i %></strong>
-					<% }else if(i > 0 && i <= totalPages){ %>
-						<a href="EmployeeList?page=<%= i %>">
-							<%= i %>
-						</a>
-					<% } %>
-				<% } %>
-				<% if(currentPage == 1){ %>
-					<% if(totalPages == 4){ %>
-						<a href="EmployeeList?page=4">
-							4
-						</a>
-					<% }else if(totalPages >= 5){ %>
-						<a href="EmployeeList?page=4">
-							4
-						</a>
-						<a href="EmployeeList?page=5">
-							5
-						</a>
-					<% } %>
-				<% } %>
-				<% if(currentPage == 2 && totalPages >= 5){ %>
-					<a href="EmployeeList?page=5">
-						5
-					</a>
-				<% } %>
-				<% if(totalPages >= 6 && totalPages - currentPage >= 3){ %>
-					<span>
-						...
-					</span>
-				<% } %>
-			</span>
-
-			<span class = "pageSkip">
-				<% if(currentPage < totalPages){ %>
-					<a href="EmployeeList?page=<%= currentPage + 1 %>">
-				    	>
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-
-				<% if(currentPage < totalPages){ %>
-					<a href="EmployeeList?page=<%= totalPages %>">
-						>>
-					</a>
-				<% }else{ %>
-					<span></span>
-				<% } %>
-			</span>
+		<div class="pagingButtons" id="pagingButtonsBottom">
 		</div>
 		
-		<div class = displayTotalAndCurrentPage>
-			<% if(currentPage * pageSize > totalSearchedEmployees){ %>
-				<%= (currentPage - 1) * pageSize + 1 %>～<%= totalSearchedEmployees %>件/<%= totalSearchedEmployees %>件中
-			<% }else{ %>
-				<%= (currentPage - 1) * pageSize + 1 %>～<%= currentPage * pageSize %>件/<%= totalSearchedEmployees %>件中
-			<% } %>
+		<div class="pageInfo" id="pageInfoBottom">
 		</div>
 	</body>
 
 	<script>
 	function clearSearchForm() {
-
-	    document
-	        .querySelectorAll(
-	            'input[type="text"]')
-	        .forEach(
-	            text => text.value = "");
-
-	    document
-	        .querySelectorAll(
-	            'input[type="checkbox"]')
-	        .forEach(
-	            check => check.checked = false);
+	    document.querySelectorAll('input[type="text"]').forEach(textBox => textBox.value = "");
+	    document.querySelectorAll('input[type="checkbox"]').forEach(checkBox => checkBox.checked = false);
 	}
 	
+	const pageSize = 10;
+	const rows = document.querySelectorAll(".employeeRow");
+	const totalPages = Math.ceil(rows.length / pageSize);
+	let currentPage = 1;
+	
+	function showPage() {
+		const start = (currentPage - 1) * pageSize;
+		const end = Math.min(currentPage * pageSize - 1,rows.length - 1);
+				
+		rows.forEach(row => row.style.display = "none");
+		for (let i = start; i <= end; i++) {
+			rows[i].style.display = "";
+		}
+		showPageInfo(start,end);
+		showPagingButtons();
+	}
+
+	/**
+	 * ページ内での表の表示範囲を示す表示
+	 * 例: 1～10件表示/30件中
+	 */
+	function showPageInfo(start,end) {
+		if(rows.length === 0){
+			const noContents = "0件/0件中"
+		    document.getElementById("pageInfoTop").textContent = noContents;
+		    document.getElementById("pageInfoBottom").textContent = noContents;
+		    return;
+		}
+		const pageInfo = (start + 1) + "～" + (end + 1) + "件/" + rows.length + "件中";
+		document.getElementById("pageInfoTop").textContent = pageInfo;
+		document.getElementById("pageInfoBottom").textContent = pageInfo;
+	}
+
+	/**
+	 * 表のページを切り替えるボタンの表示
+	 */
+	function showPagingButtons() {
+		const pagingButtonsTop = document.getElementById("pagingButtonsTop");
+		const pagingButtonsBottom = document.getElementById("pagingButtonsBottom");
+		pagingButtonsTop.innerHTML = "";
+		pagingButtonsBottom.innerHTML = "";
+
+		if(rows.length === 0){
+			pagingButtonsTop.innerHTML = `<strong>1</strong>`;
+			pagingButtonsBottom.innerHTML = `<strong>1</strong>`;
+		    return;
+		}
+		
+		const pageReturn = document.createElement("span");
+		pageReturn.className = "pageJump";
+		if (currentPage > 1) {
+			pageReturn.innerHTML += `<button type="button" onclick="currentPage = 1; showPage();">
+					&lt;&lt;
+				</button>`;
+
+			pageReturn.innerHTML +=
+				`<button type="button" onclick="currentPage--; showPage();">
+					&lt;
+				</button>`;
+		}else{
+			pageReturn.innerHTML += `<span class="pagePlaceholder"></span>`
+			pageReturn.innerHTML += `<span class="pagePlaceholder"></span>`
+		}
+
+		const pageNums = document.createElement("span");
+		pageNums.className = "pageNums";
+		let startPage;
+		let endPage;
+
+		/** 
+		 * ページ番号の表示制御
+		 * 現在いるページの前後2ページを含めて5件表示する
+		 * 表示位置が先頭・末尾の付近の場合、現在のページを含めて前後5件表示する
+		 * 
+		 * 例：10ページの検索結果が存在する
+		 * 2ページ目を選択⇒１，[２]，３，４，５
+		 * 9ページ目を選択⇒６，７，８，[９]、１０
+		 */
+		if(totalPages <= 5){
+			startPage = 1;
+			endPage = totalPages;
+		}else if(currentPage <= 3){
+			startPage = 1;
+			endPage = 5;
+		}else if(currentPage >= totalPages - 2){
+			startPage = totalPages - 4;
+			endPage = totalPages;
+		}else{
+			startPage = currentPage - 2;
+			endPage = currentPage + 2;
+		}
+		
+		if (startPage > 1) {
+			pageNums.innerHTML += "<span>...</span>";
+		}
+		for (
+			let i = startPage;
+			i <= endPage;
+			i++
+		) {
+			if (i === currentPage) {
+				pageNums.innerHTML += `<strong>` + i + `</strong>`;
+			} else {
+				pageNums.innerHTML +=
+					'<button type="button" onclick="currentPage =' + i + '; showPage();">'
+					 + i + 
+					'</button>';
+			}
+		}
+		
+		if (endPage < totalPages) {
+			pageNums.innerHTML += "<span>...</span>";
+		}
+
+		const pageSkip = document.createElement("span");
+		pageSkip.className = "pageJump";
+
+		if (currentPage < totalPages
+		) {
+			pageSkip.innerHTML +=
+				`<button type="button" onclick="currentPage++; showPage();">
+					&gt;
+				</button>`;
+
+			pageSkip.innerHTML +=
+				`<button type="button" onclick="currentPage = ` + totalPages + `; showPage();">
+					&gt;&gt;
+				</button>`;
+		}else{
+			pageSkip.innerHTML += `<span class="pagePlaceholder"></span>`
+			pageSkip.innerHTML += `<span class="pagePlaceholder"></span>`
+		}
+
+		const pagingHtml =
+			pageReturn.outerHTML
+			+ pageNums.outerHTML
+			+ pageSkip.outerHTML;
+			
+		pagingButtonsTop.innerHTML = pagingHtml;
+		pagingButtonsBottom.innerHTML = pagingHtml;
+	}
+
+	showPage();
 	</script>
 	</html>
