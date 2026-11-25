@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-	<%@ page import="definition.ErrorKeys" %>
-	<%@ page import="definition.EmployeeKeys" %>
+	<%@ page import="definition.key.ErrorKeys" %>
+	<%@ page import="definition.key.EmployeeKeys" %>
+	<%@ page import="definition.path.Paths" %>
 		<!DOCTYPE html>
 		<html lang="ja">
 
@@ -18,11 +19,11 @@
 		<body>
 			<div class="pageHeader">
 				<h2>社員情報を入力</h2>
-				<a href="<%= request.getContextPath() %>/EmployeeList">
+				<a href="<%= request.getContextPath() %><%= Paths.LIST_SERVLET_PATH %>">
 					<一覧表示画面に戻る </a>
 			</div>
 
-			<form id="employeeForm" action="<%= request.getContextPath() %>/EmployeeRegisterConfirm" method="post">
+			<form id="employeeForm" action="<%= request.getContextPath() %><%= Paths.REGISTER_CONFIRM_SERVLET_PATH %>" method="post">
 
 				<div class="formRow">
 					<label for="employeeNum">社員番号*</label>

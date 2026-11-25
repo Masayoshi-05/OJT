@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-	<%@ page import="definition.ErrorKeys" %>
-		<%@ page import="definition.EmployeeKeys" %>
+	<%@ page import="definition.key.ErrorKeys" %>
+		<%@ page import="definition.key.EmployeeKeys" %>
+		<%@ page import="definition.path.Paths" %>
 
 			<!DOCTYPE html>
 			<html lang="ja">
@@ -73,11 +74,11 @@
 				</div>
 
 				<div class="doubleButtonArea">
-					<form action="<%= request.getContextPath() %>/EmployeeRegisterInput" method="post">
+					<form action="<%= request.getContextPath() %><%= Paths.REGISTER_INPUT_SERVLET_PATH %>" method="post">
 						<button type="submit">入力画面に戻る</button>
 					</form>
 
-					<form id="employeeForm" action="<%= request.getContextPath() %>/EmployeeRegisterComplete"
+					<form id="employeeForm" action="<%= request.getContextPath() %><%= Paths.REGISTER_COMPLETE_SERVLET_PATH %>"
 						method="post">
 						<button type="submit">登録</button>
 					</form>
