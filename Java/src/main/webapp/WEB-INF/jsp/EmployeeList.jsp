@@ -187,6 +187,9 @@
 	</body>
 
 	<script>
+	/**
+	 * 検索フォーム内のテキストボックス、チェックボックスへの入力をクリアする
+	 */
 	function clearSearchForm() {
 	    document.querySelectorAll('input[type="text"]').forEach(textBox => textBox.value = "");
 	    document.querySelectorAll('input[type="checkbox"]').forEach(checkBox => checkBox.checked = false);
@@ -197,6 +200,9 @@
 	const totalPages = Math.ceil(rows.length / pageSize);
 	let currentPage = 1;
 	
+	/**
+	 * 社員情報一覧表、ページ情報、ページ番号切り替えボタンを表示する
+	 */
 	function showPage() {
 		const start = (currentPage - 1) * pageSize;
 		const end = Math.min(currentPage * pageSize - 1,rows.length - 1);
@@ -210,7 +216,7 @@
 	}
 
 	/**
-	 * ページ内での表の表示範囲を示す表示
+	 * 現在表示されている表の社員情報が検索結果の何件目～何件目であるかの表示を更新する
 	 * 例: 1～10件表示/30件中
 	 */
 	function showPageInfo(start,end) {
@@ -268,7 +274,7 @@
 		 * 
 		 * 例：10ページの検索結果が存在する
 		 * 2ページ目を選択⇒１，[２]，３，４，５
-		 * 9ページ目を選択⇒６，７，８，[９]、１０
+		 * 9ページ目を選択⇒６，７，８，[９]，１０
 		 */
 		if(totalPages <= 5){
 			startPage = 1;
